@@ -10,11 +10,10 @@ import { useState } from "react";
 import axios from "axios";
 
 function ChatMenu(props) {
-  const [messages, setMessages] = useState();
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState("");
   const { idLogged, idFriend } = useContext(UserContext);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchMessages = async () => {
       const response = await axios.get(
         "https://localhost:7228/api/messages/" + idLogged + "," + idFriend
@@ -26,12 +25,10 @@ function ChatMenu(props) {
     };
 
     fetchMessages();
-  }, []);
+  }, []);*/
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log(message);
 
     await axios.post("https://localhost:7228/api/messages", {
       idSender: idLogged,
@@ -43,10 +40,12 @@ function ChatMenu(props) {
   };
 
   return (
+    <>
+    {props.messages && props.messages.map((message, index) => <Message align="center" text={message.text} key={index}></Message>)}
     <Grid container direction="column">
       <Grid item container direction="column" spacing={1} sx={{ pb: 8 }}>
-        {messages
-          ? messages.map((message, index) => {
+        {props.messages
+          ? props.messages.map((message, index) => {
               if (
                 message.idSender == idLogged &&
                 message.idReceiver == idFriend
@@ -107,6 +106,7 @@ function ChatMenu(props) {
         </Box>
       </Grid>
     </Grid>
+    </>
   );
 }
 

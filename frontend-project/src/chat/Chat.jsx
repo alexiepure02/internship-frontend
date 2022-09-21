@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 
-import ChatWindow from "./ChatWindow";
 import ChatInput from "./ChatInput";
+import ChatMenu from "./ChatMenu";
 import axios from "axios";
 
 const Chat = () => {
@@ -18,18 +18,13 @@ const Chat = () => {
       .withAutomaticReconnect()
       .build();
 
-    setConnection(newConnection);
-  }, []);
-
-  useEffect(() => {
-    if (connection) {
-      connection
+    if (newConnection) {
+      newConnection
         .start()
         .then((result) => {
           console.log("Connected!");
 
-          connection.on("ReceiveMessage", (message) => {
-            console.log(message + "aaaaa");
+          newConnection.on("ReceiveMessage", (message) => {
             const updatedChat = [...latestChat.current];
             updatedChat.push(message);
 
@@ -37,21 +32,26 @@ const Chat = () => {
           });
         })
         .catch((e) => console.log("Connection failed: ", e));
+
+        setConnection(newConnection);
     }
-  }, [connection]);
+  }, []);
 
   const sendMessage = async (idSender, idReceiver, text) => {
     const chatMessage = {
       idSender: idSender,
       idReceiver: idReceiver,
-      message: text,
+      text: text,
     };
-
-    console.log(connection);
 
     if (connection._connectionStarted) {
       try {
-        connection.send("SendMessage", chatMessage);
+        //connection.send("SendMessage", chatMessage);
+
+        await axios.post(
+          "https://localhost:7228/api/messages/msg",
+          chatMessage
+        );
       } catch (e) {
         console.log(e);
       }
@@ -64,7 +64,7 @@ const Chat = () => {
     <div>
       <ChatInput sendMessage={sendMessage} />
       <hr />
-      <ChatWindow chat={chat} />
+      <ChatMenu messages={chat} />
     </div>
   );
 };

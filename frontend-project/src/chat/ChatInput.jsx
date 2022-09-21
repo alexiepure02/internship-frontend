@@ -10,8 +10,6 @@ const ChatInput = (props) => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    console.log(idSender, idReceiver, message);
-
     const isIdSenderProvided = idSender && idSender !== 0;
     const isIdReceiverProvided = idReceiver && idReceiver !== 0;
     const isMessageProvided = message && message !== "";
@@ -30,7 +28,7 @@ const ChatInput = (props) => {
         id="idSender"
         name="idSender"
         label="idSender"
-        value={idSender}
+        value={idSender == 0 ? "" : idSender}
         onChange={(event) => setIdSender(event.currentTarget.value)}
       />
       <br />
@@ -39,7 +37,7 @@ const ChatInput = (props) => {
         id="idReceiver"
         name="idReceiver"
         label="idReceiver"
-        value={idReceiver}
+        value={idReceiver == 0 ? "" : idReceiver}
         onChange={(event) => setIdReceiver(event.currentTarget.value)}
       />
       <br />
