@@ -15,7 +15,7 @@ const ChatInput = (props) => {
     const isMessageProvided = message && message !== "";
 
     if (isIdSenderProvided && isIdReceiverProvided && isMessageProvided) {
-      props.sendMessage(idSender, idSender, message);
+      props.sendMessage(idSender, idReceiver, message);
     } else {
       alert("Please insert an idSender, an idSender and a message.");
     }

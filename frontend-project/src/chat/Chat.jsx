@@ -33,7 +33,7 @@ const Chat = () => {
         })
         .catch((e) => console.log("Connection failed: ", e));
 
-        setConnection(newConnection);
+      setConnection(newConnection);
     }
   }, []);
 
@@ -46,8 +46,6 @@ const Chat = () => {
 
     if (connection._connectionStarted) {
       try {
-        //connection.send("SendMessage", chatMessage);
-
         await axios.post(
           "https://localhost:7228/api/messages/msg",
           chatMessage
@@ -60,13 +58,7 @@ const Chat = () => {
     }
   };
 
-  return (
-    <div>
-      <ChatInput sendMessage={sendMessage} />
-      <hr />
-      <ChatMenu messages={chat} />
-    </div>
-  );
+  return <ChatMenu sendMessage={sendMessage} messages={chat} />;
 };
 
 export default Chat;

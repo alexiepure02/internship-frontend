@@ -20,12 +20,14 @@ import { useNavigate } from "react-router-dom";
 
 function FriendsMenu(props) {
   const { idLogged, setIdFriend } = useContext(UserContext);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [friends, setFriends] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    // reset idFriend when re-entering this page
+    setIdFriend(0);
+
     const fetchFriends = async () => {
       const response = await axios.get(
         "https://localhost:7228/api/users/" + idLogged + "/friends"
@@ -35,14 +37,6 @@ function FriendsMenu(props) {
 
     fetchFriends();
   }, []);
-
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
-
-    setIdFriend(index);
-
-    navigate("/chat");
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -57,13 +51,12 @@ function FriendsMenu(props) {
         <List>
           {friends
             ? friends.map((friend, index) => (
-                <ListItemButton
+                /*<ListItemButton
                   key={index}
-                  selected={selectedIndex === friend.id}
                   onClick={(event) => handleListItemClick(event, friend.id)}
-                >
-                  <Friend id={friend.id} name={friend.displayName} />
-                </ListItemButton>
+                >*/
+                <Friend id={friend.id} name={friend.displayName} />
+                /*                </ListItemButton>*/
               ))
             : "Not loaded yet."}
         </List>

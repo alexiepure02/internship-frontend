@@ -1,16 +1,18 @@
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Layout from "./Layout";
-import ChatMenu from "./chat/ChatMenu";
-import FriendsMenu from "./friends/FriendsMenu";
-import LoginMenu from "./LoginMenu";
-import RegisterMenu from "./RegisterMenu";
 import { UserContext } from "./UserContext";
 import { useState } from "react";
 import axios from "axios";
 
 import Chat from "./chat/Chat";
+import Header from "./Header";
+import Account from "./Account";
+import FriendsMenu from "./friends/FriendsMenu";
+import FriendRequestsMenu from "./friend-requests/FriendRequestsMenu";
+import LoginMenu from "./LoginMenu";
+import RegisterMenu from "./RegisterMenu";
 
 const messages = [
   { idSender: 1, idReceiver: 2, text: "text1" },
@@ -78,10 +80,41 @@ function App() {
     <UserContext.Provider value={value}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="chat2" element={<Chat />} />
-            <Route path="friends" element={<FriendsMenu />} />
-            <Route path="chat" element={<ChatMenu />} />
+          <Route path="/" element={<Header />}>
+            <Route
+              path="friends"
+              element={
+                idLogged != 0 ? <FriendsMenu /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="chat"
+              element={
+                idLogged != 0 ? (
+                  idFriend != 0 ? (
+                    <Chat />
+                  ) : (
+                    <Navigate to="/friends" />
+                  )
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="account"
+              element={idLogged != 0 ? <Account /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="friend-requests"
+              element={
+                idLogged != 0 ? (
+                  <FriendRequestsMenu />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
             <Route path="login" element={<LoginMenu />} />
             <Route path="register" element={<RegisterMenu />} />
           </Route>

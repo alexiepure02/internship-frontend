@@ -18,9 +18,6 @@ const Layout = () => {
       {idFriend != 0 && <Typography>Friend is: {idFriend}</Typography>}
       <nav>
         <ul>
-        <li>
-            <Link to="/chat2">Chat2</Link>
-          </li>
           <li>
             <Link to="/friends">Friends</Link>
           </li>

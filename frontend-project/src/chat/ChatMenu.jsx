@@ -8,40 +8,24 @@ import { useContext } from "react";
 import { UserContext } from "../UserContext";
 import { useState } from "react";
 import axios from "axios";
+import { red } from "@mui/material/colors";
 
 function ChatMenu(props) {
   const [message, setMessage] = useState("");
   const { idLogged, idFriend } = useContext(UserContext);
 
-  /*useEffect(() => {
-    const fetchMessages = async () => {
-      const response = await axios.get(
-        "https://localhost:7228/api/messages/" + idLogged + "," + idFriend
-      );
-
-      console.log(response.data);
-
-      setMessages(response.data);
-    };
-
-    fetchMessages();
-  }, []);*/
-
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const isMessageProvided = message && message !== "";
 
-    await axios.post("https://localhost:7228/api/messages", {
-      idSender: idLogged,
-      idReceiver: idFriend,
-      text: message,
-    });
+    if (isMessageProvided) {
+      props.sendMessage(idLogged, idFriend, message);
+    }
 
     setMessage("");
   };
 
   return (
-    <>
-    {props.messages && props.messages.map((message, index) => <Message align="center" text={message.text} key={index}></Message>)}
     <Grid container direction="column">
       <Grid item container direction="column" spacing={1} sx={{ pb: 8 }}>
         {props.messages
@@ -49,21 +33,34 @@ function ChatMenu(props) {
               if (
                 message.idSender == idLogged &&
                 message.idReceiver == idFriend
-              )
+              ) {
                 return (
-                  <Grid item container justifyContent="flex-end">
-                    <Message align="end" text={message.text} />
+                  <Grid item container key={index} justifyContent="flex-end">
+                    <Message
+                      align="end"
+                      backgroundColor={red[300]} // change color
+                      text={message.text}
+                      idSender={message.idSender}
+                      idReceiver={message.idReceiver}
+                    />
                   </Grid>
                 );
-              else if (
+              } else if (
                 message.idSender == idFriend &&
                 message.idReceiver == idLogged
-              )
+              ) {
                 return (
-                  <Grid item container justifyContent="flex-start">
-                    <Message align="start" text={message.text} />
+                  <Grid item container key={index} justifyContent="flex-start">
+                    <Message
+                      align="start"
+                      backgroundColor={red[100]} // change color
+                      text={message.text}
+                      idSender={message.idSender}
+                      idReceiver={message.idReceiver}
+                    />
                   </Grid>
                 );
+              }
             })
           : "Not loaded yet."}
       </Grid>
@@ -88,13 +85,7 @@ function ChatMenu(props) {
             onChange={(event) => setMessage(event.currentTarget.value)}
             InputProps={{
               endAdornment: (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#505050",
-                  }}
-                >
+                <Button type="submit" variant="contained">
                   <Typography>Send</Typography>
                 </Button>
               ),
@@ -106,7 +97,6 @@ function ChatMenu(props) {
         </Box>
       </Grid>
     </Grid>
-    </>
   );
 }
 
