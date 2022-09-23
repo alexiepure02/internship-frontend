@@ -1,10 +1,10 @@
 import { Typography } from "@mui/material";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../components/UserContext";
 import { Container, Box } from "@mui/material";
 
-const Account = (props) => {
+const AccountPage = (props) => {
   const { idLogged } = useContext(UserContext);
 
   const [user, setUser] = useState(null);
@@ -43,4 +43,4 @@ const Account = (props) => {
   );
 };
 
-export default Account;
+export default AccountPage;

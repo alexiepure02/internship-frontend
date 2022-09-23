@@ -1,4 +1,4 @@
-import Friend from "./Friend";
+import Friend from "../components/friends/Friend";
 
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -10,15 +10,14 @@ import Divider from "@mui/material/Divider";
 import { Avatar, Icon, ListItemAvatar, Typography } from "@mui/material";
 import { Container } from "@mui/material";
 
-import useFetchData from "../useFetchData";
 import { useContext } from "react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../components/UserContext";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function FriendsMenu(props) {
+function FriendsPage(props) {
   const { idLogged, setIdFriend } = useContext(UserContext);
   const [friends, setFriends] = useState(null);
 
@@ -65,4 +64,4 @@ function FriendsMenu(props) {
   );
 }
 
-export default FriendsMenu;
+export default FriendsPage;

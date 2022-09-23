@@ -1,16 +1,16 @@
-import Message from "./Message";
+import Message from "../components/chat/Message";
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { alpha, AppBar, Grid, Typography, Box, Container } from "@mui/material";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../components/UserContext";
 import { useState } from "react";
 import axios from "axios";
 import { red } from "@mui/material/colors";
 
-function ChatMenu(props) {
+function ChatPage(props) {
   const [message, setMessage] = useState("");
   const { idLogged, idFriend } = useContext(UserContext);
 
@@ -100,4 +100,4 @@ function ChatMenu(props) {
   );
 }
 
-export default ChatMenu;
+export default ChatPage;

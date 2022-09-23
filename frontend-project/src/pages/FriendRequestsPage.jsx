@@ -13,16 +13,15 @@ import CheckIcon from "@mui/icons-material/Check";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-import useFetchData from "../useFetchData";
 import { useContext } from "react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../components/UserContext";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import FriendRequest from "./FriendRequest";
+import FriendRequest from "../components/friend-requests/FriendRequest";
 
-function FriendRequestsMenu(props) {
+function FriendRequestsPage(props) {
   const { idLogged } = useContext(UserContext);
   const [friendRequests, setFriendRequests] = useState(null);
   const [idFriend, setIdFriend] = useState("");
@@ -112,4 +111,4 @@ function FriendRequestsMenu(props) {
   );
 }
 
-export default FriendRequestsMenu;
+export default FriendRequestsPage;

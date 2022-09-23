@@ -5,13 +5,13 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Box } from "@mui/material";
 import { useContext } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../components/UserContext";
 import { useState } from "react";
 import { Alert } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-function LoginMenu(props) {
+function LoginPage(props) {
   const { login } = useContext(UserContext);
 
   const [username, setUsername] = useState("");
@@ -101,4 +101,4 @@ function LoginMenu(props) {
   );
 }
 
-export default LoginMenu;
+export default LoginPage;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 
-import ChatInput from "./ChatInput";
-import ChatMenu from "./ChatMenu";
+import ChatPage from "../../pages/ChatPage";
 import axios from "axios";
 
 const Chat = () => {
@@ -58,7 +57,7 @@ const Chat = () => {
     }
   };
 
-  return <ChatMenu sendMessage={sendMessage} messages={chat} />;
+  return <ChatPage sendMessage={sendMessage} messages={chat} />;
 };
 
 export default Chat;

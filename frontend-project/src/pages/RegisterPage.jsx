@@ -10,11 +10,11 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState, useContext } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../components/UserContext";
 import { Alert, List, ListItem } from "@mui/material";
 import { Link } from "react-router-dom";
 
-function RegisterMenu() {
+function RegisterPage() {
   const { register } = useContext(UserContext);
 
   const [username, setUsername] = useState("");
@@ -120,4 +120,4 @@ function RegisterMenu() {
   );
 }
 
-export default RegisterMenu;
+export default RegisterPage;
