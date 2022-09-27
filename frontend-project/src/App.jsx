@@ -12,6 +12,7 @@ import FriendsPage from "./pages/Friendspage";
 import FriendRequestsPage from "./pages/FriendRequestsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import SettingsPage from "./pages/SettingsPage";
 
 function App() {
   const [idLogged, setIdLogged] = useState(0);
@@ -47,45 +48,35 @@ function App() {
     register,
   };
 
+  const checkIfLogged = (page) =>
+    idLogged != 0 ? page : <Navigate to="/login" />;
+
+  const checkIfFriendSelected = (page) => {
+    if (idLogged != 0) {
+      if (idFriend != 0) {
+        console.log(idLogged, idFriend);
+        return page;
+      } else {
+        return <Navigate to="/friends" />;
+      }
+    } else {
+      return <Navigate to="/login" />;
+    }
+  };
+
   return (
     <UserContext.Provider value={value}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Header />}>
-            <Route
-              path="friends"
-              element={
-                idLogged != 0 ? <FriendsPage /> : <Navigate to="/login" />
-              }
-            />
-            <Route
-              path="chat"
-              element={
-                idLogged != 0 ? (
-                  idFriend != 0 ? (
-                    <Chat />
-                  ) : (
-                    <Navigate to="/friends" />
-                  )
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="account"
-              element={idLogged != 0 ? <AccountPage /> : <Navigate to="/login" />}
-            />
+            <Route path="friends" element={checkIfLogged(<FriendsPage />)} />
+            <Route path="chat" element={checkIfFriendSelected(<Chat />)} />
+            <Route path="account" element={checkIfLogged(<AccountPage />)} />
             <Route
               path="friend-requests"
-              element={
-                idLogged != 0 ? (
-                  <FriendRequestsPage />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={checkIfLogged(<FriendRequestsPage />)}
             />
+            <Route path="settings" element={checkIfLogged(<SettingsPage />)} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
           </Route>

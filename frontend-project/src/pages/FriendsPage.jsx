@@ -15,13 +15,12 @@ import { UserContext } from "../components/UserContext";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 function FriendsPage(props) {
   const { idLogged, setIdFriend } = useContext(UserContext);
-  const [friends, setFriends] = useState(null);
 
-  const navigate = useNavigate();
+  const [page, reloadPage] = useState();
+  const [friends, setFriends] = useState(null);
 
   useEffect(() => {
     // reset idFriend when re-entering this page
@@ -35,7 +34,7 @@ function FriendsPage(props) {
     };
 
     fetchFriends();
-  }, []);
+  }, [page]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -50,12 +49,11 @@ function FriendsPage(props) {
         <List>
           {friends
             ? friends.map((friend, index) => (
-                /*<ListItemButton
-                  key={index}
-                  onClick={(event) => handleListItemClick(event, friend.id)}
-                >*/
-                <Friend id={friend.id} name={friend.displayName} />
-                /*                </ListItemButton>*/
+                <Friend
+                  id={friend.id}
+                  name={friend.displayName}
+                  reloadPage={reloadPage}
+                />
               ))
             : "Not loaded yet."}
         </List>

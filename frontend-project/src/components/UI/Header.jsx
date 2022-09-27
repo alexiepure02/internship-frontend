@@ -26,10 +26,6 @@ const Header = () => {
 
   const navigate = useNavigate();
 
-  const goToLogin = () => {
-    navigate("/login");
-  };
-
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -40,6 +36,31 @@ const Header = () => {
 
     setSidebar(open);
   };
+
+  const backupNav = (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/friends">Friends</Link>
+        </li>
+        <li>
+          <Link to="/chat">Chat</Link>
+        </li>
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+        <li>
+          <Link to="/register">Register</Link>
+        </li>
+        <li>
+          <Link to="/account">Account</Link>
+        </li>
+        <li>
+          <Link to="/friend-requests">Friend requests</Link>
+        </li>
+      </ul>
+    </nav>
+  );
 
   return (
     <>
@@ -61,7 +82,7 @@ const Header = () => {
           </Typography>
 
           {idLogged == 0 ? (
-            <Button color="inherit" onClick={goToLogin}>
+            <Button color="inherit" onClick={(event) => navigate("/login")}>
               Login
             </Button>
           ) : (
@@ -71,28 +92,6 @@ const Header = () => {
           )}
         </Toolbar>
       </AppBar>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/friends">Friends</Link>
-          </li>
-          <li>
-            <Link to="/chat">Chat</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/register">Register</Link>
-          </li>
-          <li>
-            <Link to="/account">Account</Link>
-          </li>
-          <li>
-            <Link to="/friend-requests">Friend requests</Link>
-          </li>
-        </ul>
-      </nav>
 
       <Drawer open={sidebar} onClose={toggleDrawer(false)}>
         <Sidebar toggleDrawer={toggleDrawer} />

@@ -23,6 +23,8 @@ import FriendRequest from "../components/friend-requests/FriendRequest";
 
 function FriendRequestsPage(props) {
   const { idLogged } = useContext(UserContext);
+
+  const [page, reloadPage] = useState();
   const [friendRequests, setFriendRequests] = useState(null);
   const [idFriend, setIdFriend] = useState("");
 
@@ -35,10 +37,10 @@ function FriendRequestsPage(props) {
     };
 
     fetchFriendRequests();
-  }, []);
+  }, [page]);
 
-  const addFriend = (event) => {
-    axios.post("https://localhost:7228/api/users/friend-requests", {
+  const addFriend = async (event) => {
+    await axios.post("https://localhost:7228/api/users/friend-requests", {
       idUser: idFriend,
       idRequester: idLogged,
     });
@@ -46,11 +48,15 @@ function FriendRequestsPage(props) {
     setIdFriend("");
   };
 
-  const handleListItemClick = (event, idRequester, accepted) => {
-    axios.put("https://localhost:7228/api/users/friend-requests/" + accepted, {
-      idUser: idLogged,
-      idRequester: idRequester,
-    });
+  const handleListItemClick = async (event, idRequester, accepted) => {
+    await axios.put(
+      "https://localhost:7228/api/users/friend-requests/" + accepted,
+      {
+        idUser: idLogged,
+        idRequester: idRequester,
+      }
+    );
+    reloadPage({});
   };
 
   return (

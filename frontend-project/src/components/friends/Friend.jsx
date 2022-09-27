@@ -11,12 +11,13 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Friend(props) {
-  const { setIdFriend } = useContext(UserContext);
+  const { idLogged, setIdFriend } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -35,9 +36,17 @@ function Friend(props) {
     setAnchorEl(null);
   };
 
-  const deleteFriend = () => {
-    console.log("implement delete friend functionality");
-  }
+  const deleteFriend = async () => {
+    const response = await axios.delete(
+      "https://localhost:7228/api/users/" + idLogged + "/friends/" + props.id
+    );
+
+    console.log(props);
+
+    console.log(props.reloadPage, typeof props.reloadPage);
+
+    props.reloadPage({});
+  };
 
   return (
     <ListItem key={props.id}>
@@ -74,10 +83,7 @@ function Friend(props) {
           },
         }}
       >
-        <MenuItem onClick={deleteFriend}>
-          Delete
-        </MenuItem>
-
+        <MenuItem onClick={deleteFriend}>Delete</MenuItem>
       </Menu>
     </ListItem>
   );
