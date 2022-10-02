@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../components/UserContext";
@@ -15,13 +15,13 @@ const AccountPage = (props) => {
           marginTop: 8,
           display: "flex",
           flexDirection: "column",
-          alignItems: "left",
+          alignItems: "center",
         }}
       >
         {userInfo && (
           <>
-          <Typography variant="h2"sx={{mb: 4}}>Account page</Typography>
-            <Typography variant="h4">Name: {userInfo.name}</Typography>
+          <Avatar sx={{width: 100, height: 100}}></Avatar>
+            <Typography variant="h4" sx={{pt: 2}}>Name: {userInfo.name}</Typography>
             <Typography variant="h4">Id: {userInfo.id}</Typography>
           </>
         )}

@@ -42,7 +42,10 @@ function FriendsPage(props) {
         "https://localhost:7228/api/users/" + userId + "/friends",
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setFriends(response.data);
+
+      if (response.data.length !== 0) {
+        setFriends(response.data);
+      }
     };
 
     fetchFriends();
@@ -59,16 +62,18 @@ function FriendsPage(props) {
         }}
       >
         <List>
-          {friends
-            ? friends.map((friend, index) => (
-                <Friend
-                  key={friend.id}
-                  id={friend.id}
-                  name={friend.displayName}
-                  reloadPage={reloadPage}
-                />
-              ))
-            : "Not loaded yet."}
+          {friends ? (
+            friends.map((friend, index) => (
+              <Friend
+                key={friend.id}
+                id={friend.id}
+                name={friend.displayName}
+                reloadPage={reloadPage}
+              />
+            ))
+          ) : (
+            <Typography>No friends.</Typography>
+          )}
         </List>
       </Box>
     </Container>

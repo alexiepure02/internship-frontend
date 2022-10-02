@@ -1,4 +1,11 @@
-import { AppBar, Typography, Button, Toolbar, IconButton } from "@mui/material";
+import {
+  AppBar,
+  Typography,
+  Button,
+  Toolbar,
+  IconButton,
+  Avatar,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
 import { useContext } from "react";
@@ -41,6 +48,10 @@ const Header = () => {
 
   const goToLogin = () => {
     navigate("/login");
+  };
+
+  const goToAccount = () => {
+    navigate("/account");
   };
 
   const logout = () => {
@@ -94,9 +105,9 @@ const Header = () => {
           </Typography>
 
           {isAuthenticated ? (
-            <Button color="inherit" onClick={logout}>
-              Logout
-            </Button>
+            <IconButton onClick={goToAccount} sx={{p: 0}}>
+              <Avatar></Avatar>
+            </IconButton>
           ) : (
             <Button color="inherit" onClick={goToLogin}>
               Login
@@ -105,8 +116,16 @@ const Header = () => {
         </Toolbar>
       </AppBar>
 
-      <Drawer open={sidebar} onClose={toggleDrawer(false)}>
-        <Sidebar toggleDrawer={toggleDrawer} />
+      <Drawer
+        open={sidebar}
+        onClose={toggleDrawer(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: (theme) => theme.palette.secondary.light,
+          },
+        }}
+      >
+        <Sidebar toggleDrawer={toggleDrawer} logout={logout} />
       </Drawer>
 
       <Outlet />

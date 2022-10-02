@@ -55,7 +55,7 @@ function Friend(props) {
     <ListItem>
       <ListItemButton onClick={(event) => handleFriendClick(event, props.id)}>
         <ListItemAvatar>
-          <Avatar>{props.name[0]}</Avatar>
+          <Avatar sx={{backgroundColor: theme => theme.palette.primary.main}}>{props.name[0]}</Avatar>
         </ListItemAvatar>
         <ListItemText>
           <Typography>{props.name + " (" + props.id + ")"}</Typography>

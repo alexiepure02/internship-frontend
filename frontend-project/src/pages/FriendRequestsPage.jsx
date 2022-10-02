@@ -6,7 +6,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
-import { Avatar, Icon, ListItemAvatar, Typography } from "@mui/material";
+import { Alert, Avatar, Icon, ListItemAvatar, Typography } from "@mui/material";
 import { Container } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
@@ -29,6 +29,7 @@ function FriendRequestsPage(props) {
   const [page, reloadPage] = useState();
   const [friendRequests, setFriendRequests] = useState(null);
   const [idFriend, setIdFriend] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     const fetchFriendRequests = async () => {
@@ -43,15 +44,24 @@ function FriendRequestsPage(props) {
   }, [page]);
 
   const addFriend = async (event) => {
-    await axios.post(
-      "https://localhost:7228/api/users/friend-requests",
-      {
-        idUser: idFriend,
-        idRequester: userId,
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
+    try {
+      await axios.post(
+        "https://localhost:7228/api/users/friend-requests",
+        {
+          idUser: idFriend,
+          idRequester: userId,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessage(
+        <Alert>Friend request sent succesfully.</Alert>
+      );
+    } catch (err) {
+      setMessage(
+        <Alert severity="error">Invalid id.</Alert>
+      );
+    }
+    
     setIdFriend("");
   };
 
@@ -77,6 +87,8 @@ function FriendRequestsPage(props) {
           alignItems: "center",
         }}
       >
+        {message}
+
         <TextField
           margin="normal"
           required

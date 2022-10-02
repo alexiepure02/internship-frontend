@@ -38,7 +38,13 @@ function ChatPage(props) {
 
   return (
     <Grid container direction="column">
-      <Grid item container direction="column" spacing={1} sx={{ pt: 2, pb: 8 }}>
+      <Grid
+        item
+        container
+        direction="column"
+        spacing={1}
+        sx={{ pt: 2, pb: 8, pl: 1, pr: 1 }}
+      >
         {messages
           ? messages.map((message, index) => {
               if (
@@ -48,11 +54,12 @@ function ChatPage(props) {
                 return (
                   <Grid item container key={index} justifyContent="flex-end">
                     <Message
-                      align="end"
-                      backgroundColor={red[300]} // change color
-                      text={message.text}
+                      position="end"
+                      backgroundColor={(theme) => theme.palette.secondary.dark}
                       idSender={message.idSender}
                       idReceiver={message.idReceiver}
+                      text={message.text}
+                      time={message.dateTime}
                     />
                   </Grid>
                 );
@@ -63,11 +70,12 @@ function ChatPage(props) {
                 return (
                   <Grid item container key={index} justifyContent="flex-start">
                     <Message
-                      align="start"
-                      backgroundColor={red[100]} // change color
-                      text={message.text}
+                      position="start"
+                      backgroundColor={(theme) => theme.palette.secondary.main}
                       idSender={message.idSender}
                       idReceiver={message.idReceiver}
+                      text={message.text}
+                      time={message.dateTime}
                     />
                   </Grid>
                 );
@@ -103,7 +111,7 @@ function ChatPage(props) {
               ),
             }}
             sx={{
-              backgroundColor: alpha("#CCC", 0.9),
+              backgroundColor: (theme) => theme.palette.secondary.main,
             }}
           />
         </Box>

@@ -27,7 +27,7 @@ const Chat = () => {
         "https://localhost:7228/api/messages/" + userId + "," + friendId,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+      
       setChat(response.data);
     } catch (e) {
       console.log(e);
