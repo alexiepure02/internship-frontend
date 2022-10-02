@@ -7,7 +7,13 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
-import { Avatar, Icon, ListItemAvatar, Typography } from "@mui/material";
+import {
+  Avatar,
+  Icon,
+  ListItem,
+  ListItemAvatar,
+  Typography,
+} from "@mui/material";
 import { Container } from "@mui/material";
 
 import { useContext } from "react";
@@ -15,9 +21,14 @@ import { UserContext } from "../components/UserContext";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import jwtDecode from "jwt-decode";
+import Chat from "../components/chat/Chat";
 
 function FriendsPage(props) {
   const { idLogged, setIdFriend } = useContext(UserContext);
+
+  const token = localStorage.getItem("auth-token");
+  const userId = jwtDecode(token).id;
 
   const [page, reloadPage] = useState();
   const [friends, setFriends] = useState(null);
@@ -28,7 +39,8 @@ function FriendsPage(props) {
 
     const fetchFriends = async () => {
       const response = await axios.get(
-        "https://localhost:7228/api/users/" + idLogged + "/friends"
+        "https://localhost:7228/api/users/" + userId + "/friends",
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setFriends(response.data);
     };
@@ -50,6 +62,7 @@ function FriendsPage(props) {
           {friends
             ? friends.map((friend, index) => (
                 <Friend
+                  key={friend.id}
                   id={friend.id}
                   name={friend.displayName}
                   reloadPage={reloadPage}

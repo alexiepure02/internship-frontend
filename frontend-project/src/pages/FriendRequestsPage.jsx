@@ -20,9 +20,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FriendRequest from "../components/friend-requests/FriendRequest";
+import jwtDecode from "jwt-decode";
 
 function FriendRequestsPage(props) {
-  const { idLogged } = useContext(UserContext);
+  const token = localStorage.getItem("auth-token");
+  const userId = jwtDecode(token).id;
 
   const [page, reloadPage] = useState();
   const [friendRequests, setFriendRequests] = useState(null);
@@ -31,7 +33,8 @@ function FriendRequestsPage(props) {
   useEffect(() => {
     const fetchFriendRequests = async () => {
       const response = await axios.get(
-        "https://localhost:7228/api/users/" + idLogged + "/friend-requests"
+        "https://localhost:7228/api/users/" + userId + "/friend-requests",
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setFriendRequests(response.data);
     };
@@ -40,10 +43,14 @@ function FriendRequestsPage(props) {
   }, [page]);
 
   const addFriend = async (event) => {
-    await axios.post("https://localhost:7228/api/users/friend-requests", {
-      idUser: idFriend,
-      idRequester: idLogged,
-    });
+    await axios.post(
+      "https://localhost:7228/api/users/friend-requests",
+      {
+        idUser: idFriend,
+        idRequester: userId,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
     setIdFriend("");
   };
@@ -52,9 +59,10 @@ function FriendRequestsPage(props) {
     await axios.put(
       "https://localhost:7228/api/users/friend-requests/" + accepted,
       {
-        idUser: idLogged,
+        idUser: userId,
         idRequester: idRequester,
-      }
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
     );
     reloadPage({});
   };

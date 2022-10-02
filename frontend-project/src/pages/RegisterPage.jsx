@@ -12,24 +12,28 @@ import Container from "@mui/material/Container";
 import { useState, useContext } from "react";
 import { UserContext } from "../components/UserContext";
 import { Alert, List, ListItem } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function RegisterPage() {
-  const { register } = useContext(UserContext);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
 
+  const [accountCreated, setAccountCreated] = useState(false);
   const [error, setError] = useState();
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     setError();
+    setAccountCreated(false);
 
     try {
       await register(username, password, displayName);
+      setAccountCreated(true);
     } catch (err) {
       setError(err);
     }
@@ -37,6 +41,14 @@ function RegisterPage() {
     setUsername("");
     setPassword("");
     setDisplayName("");
+  };
+
+  const register = async (username, password, displayName) => {
+    await axios.post("https://localhost:7228/api/users/register", {
+      userName: username,
+      password: password,
+      displayName: displayName,
+    });
   };
 
   return (
@@ -53,6 +65,17 @@ function RegisterPage() {
           Sign up
         </Typography>
 
+        {accountCreated && (
+          <Alert
+            severity="success"
+            sx={{
+              mt: 2,
+            }}
+          >
+            Account created succesfully.
+          </Alert>
+        )}
+
         {error && (
           <Alert
             severity="error"
@@ -60,10 +83,10 @@ function RegisterPage() {
               mt: 2,
             }}
           >
-            Incorrect 
-            {error.response.data.errors.Username && "\n -username"}
-            {error.response.data.errors.Password && "\n -password"}
-            {error.response.data.errors.DisplayName && "\n -display name"}
+            Incorrect
+            {error.response.data.errors.Username && " username"}
+            {error.response.data.errors.Password && " password"}
+            {error.response.data.errors.DisplayName && " display name"}
           </Alert>
         )}
 

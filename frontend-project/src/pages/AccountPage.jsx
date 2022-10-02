@@ -3,22 +3,10 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../components/UserContext";
 import { Container, Box } from "@mui/material";
+import jwtDecode from "jwt-decode";
 
 const AccountPage = (props) => {
-  const { idLogged } = useContext(UserContext);
-
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await axios.get(
-        "https://localhost:7228/api/users/" + idLogged
-      );
-      setUser(response.data);
-    };
-
-    fetchUser();
-  }, []);
+  const userInfo = jwtDecode(localStorage.getItem("auth-token"));
 
   return (
     <Container component="main" maxWidth="xs">
@@ -27,15 +15,14 @@ const AccountPage = (props) => {
           marginTop: 8,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
+          alignItems: "left",
         }}
       >
-        {user && (
+        {userInfo && (
           <>
-            <Typography variant="h2">{user.displayName}</Typography>
-            <Typography variant="h4">Id: {user.id}</Typography>
-            <Typography variant="h4">Username: {user.username}</Typography>
-            <Typography variant="h4">Password: {user.password}</Typography>
+          <Typography variant="h2"sx={{mb: 4}}>Account page</Typography>
+            <Typography variant="h4">Name: {userInfo.name}</Typography>
+            <Typography variant="h4">Id: {userInfo.id}</Typography>
           </>
         )}
       </Box>

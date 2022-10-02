@@ -1,14 +1,4 @@
-import {
-  AppBar,
-  Typography,
-  Button,
-  Toolbar,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import { AppBar, Typography, Button, Toolbar, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
 import { useContext } from "react";
@@ -18,13 +8,25 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import Sidebar from "./Sidebar";
+import jwtDecode from "jwt-decode";
+import { useEffect } from "react";
 
 const Header = () => {
-  const { idLogged, idFriend, logout } = useContext(UserContext);
+  const { idLogged, idFriend } = useContext(UserContext);
+
+  const isAuthenticated = !!localStorage.getItem("auth-token");
 
   const [sidebar, setSidebar] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const userInfo = jwtDecode(localStorage.getItem("auth-token"));
+
+      console.log(userInfo);
+    }
+  }, [isAuthenticated]);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -35,6 +37,16 @@ const Header = () => {
     }
 
     setSidebar(open);
+  };
+
+  const goToLogin = () => {
+    navigate("/login");
+  };
+
+  const logout = () => {
+    localStorage.removeItem("auth-token");
+    console.log("logged out");
+    goToLogin();
   };
 
   const backupNav = (
@@ -81,13 +93,13 @@ const Header = () => {
             {idFriend != 0 && <Typography>Friend is: {idFriend}</Typography>}
           </Typography>
 
-          {idLogged == 0 ? (
-            <Button color="inherit" onClick={(event) => navigate("/login")}>
-              Login
-            </Button>
-          ) : (
+          {isAuthenticated ? (
             <Button color="inherit" onClick={logout}>
               Logout
+            </Button>
+          ) : (
+            <Button color="inherit" onClick={goToLogin}>
+              Login
             </Button>
           )}
         </Toolbar>

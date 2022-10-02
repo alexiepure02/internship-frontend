@@ -9,30 +9,41 @@ import { UserContext } from "../components/UserContext";
 import { useState } from "react";
 import axios from "axios";
 import { red } from "@mui/material/colors";
+import { useRef } from "react";
 
 function ChatPage(props) {
   const [message, setMessage] = useState("");
-  const { idLogged, idFriend } = useContext(UserContext);
+
+  const userId = props.userId;
+  const friendId = props.friendId;
+  const messages = props.messages;
+
+  const bottomRef = useRef(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const isMessageProvided = message && message !== "";
 
     if (isMessageProvided) {
-      props.sendMessage(idLogged, idFriend, message);
+      props.sendMessage(userId, friendId, message);
     }
 
     setMessage("");
   };
 
+  useEffect(() => {
+    // scroll to bottom every time messages change
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <Grid container direction="column">
-      <Grid item container direction="column" spacing={1} sx={{ pb: 8 }}>
-        {props.messages
-          ? props.messages.map((message, index) => {
+      <Grid item container direction="column" spacing={1} sx={{ pt: 2, pb: 8 }}>
+        {messages
+          ? messages.map((message, index) => {
               if (
-                message.idSender == idLogged &&
-                message.idReceiver == idFriend
+                message.idSender == userId &&
+                message.idReceiver == friendId
               ) {
                 return (
                   <Grid item container key={index} justifyContent="flex-end">
@@ -46,8 +57,8 @@ function ChatPage(props) {
                   </Grid>
                 );
               } else if (
-                message.idSender == idFriend &&
-                message.idReceiver == idLogged
+                message.idSender == friendId &&
+                message.idReceiver == userId
               ) {
                 return (
                   <Grid item container key={index} justifyContent="flex-start">
@@ -63,6 +74,7 @@ function ChatPage(props) {
               }
             })
           : "Not loaded yet."}
+        <Grid item container ref={bottomRef} />
       </Grid>
 
       <Grid item container>

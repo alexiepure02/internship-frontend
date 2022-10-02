@@ -15,6 +15,7 @@ import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Chat } from "@mui/icons-material";
 
 function Friend(props) {
   const { idLogged, setIdFriend } = useContext(UserContext);
@@ -24,14 +25,16 @@ function Friend(props) {
 
   const navigate = useNavigate();
 
+  //const setChat = props.setChat;
+
   const handleFriendClick = (event, index) => {
-    setIdFriend(index);
-    navigate("/chat");
+    navigate("/chat", { state: { idFriend: index } });
   };
 
   const handleOptionsClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -49,7 +52,7 @@ function Friend(props) {
   };
 
   return (
-    <ListItem key={props.id}>
+    <ListItem>
       <ListItemButton onClick={(event) => handleFriendClick(event, props.id)}>
         <ListItemAvatar>
           <Avatar>{props.name[0]}</Avatar>

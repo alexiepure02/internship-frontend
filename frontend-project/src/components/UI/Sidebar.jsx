@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 
 const Sidebar = (props) => {
-  const { idLogged } = useContext(UserContext);
+  const isAuthenticated = !!localStorage.getItem("auth-token");
 
   const navigate = useNavigate();
 
@@ -53,10 +53,10 @@ const Sidebar = (props) => {
       onKeyDown={props.toggleDrawer(false)}
       sx={{ m: 2 }}
     >
-      {idLogged != 0 ? (
+      {isAuthenticated != 0 ? (
         <List>
           {elements.map((element, index) => (
-            <ListItem disablePadding sx={{ mt: 2 }}>
+            <ListItem key={index} disablePadding sx={{ mt: 2 }}>
               {element.name === "Dark mode" ? (
                 <>
                   <ListItemText>

@@ -10,10 +10,9 @@ import { useState } from "react";
 import { Alert } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function LoginPage(props) {
-  const { login } = useContext(UserContext);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -32,6 +31,18 @@ function LoginPage(props) {
     } catch (err) {
       setError(err);
     }
+  };
+
+  const login = async (username, password) => {
+    const response = await axios.post(
+      "https://localhost:7228/api/users/login",
+      {
+        userName: username,
+        password: password,
+      }
+    );
+
+    localStorage.setItem("auth-token", response.data.token);
   };
 
   return (
