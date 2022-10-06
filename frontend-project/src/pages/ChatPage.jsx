@@ -1,24 +1,26 @@
-import Message from "../components/chat/Message";
+import { TextField, Button, Grid, Typography, Box } from "@mui/material";
 
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import { alpha, AppBar, Grid, Typography, Box, Container } from "@mui/material";
-import { useEffect } from "react";
-import { useContext } from "react";
-import { UserContext } from "../components/UserContext";
-import { useState } from "react";
-import axios from "axios";
-import { red } from "@mui/material/colors";
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { loremIpsum } from "react-lorem-ipsum";
+
+import { getUserInfo } from "../functions/authentication";
+import { useCallback } from "react";
+import MessagesList from "../components/chat/MessagesList";
+import { getSomeMessages } from "../functions/api";
+
+globalThis.VIRTUOSO_LOG_LEVEL = 0;
 
 function ChatPage(props) {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState(props.messages);
+  const [offset, setOffset] = useState(0);
 
-  const userId = props.userId;
+  const virtuoso = useRef(null);
+
+  const userId = getUserInfo().id;
   const friendId = props.friendId;
-  const messages = props.messages;
 
-  const bottomRef = useRef(null);
+  const numberOfMessages = 10;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,19 +34,55 @@ function ChatPage(props) {
   };
 
   useEffect(() => {
-    // scroll to bottom every time messages change
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    setMessages(props.messages);
+  }, [props.messages]);
+
+  useEffect(() => {
+    const fetchInitialMessages = async () => {
+      const initialMessages = await getSomeMessages(
+        friendId,
+        offset,
+        numberOfMessages
+      );
+      setMessages(initialMessages);
+    };
+
+    setOffset(offset + numberOfMessages);
+
+    fetchInitialMessages();
+  }, []);
+
+  const startReached = useCallback(async () => {
+    setOffset(offset + numberOfMessages);
+
+    const newMessages = await getSomeMessages(
+      friendId,
+      offset,
+      numberOfMessages
+    );
+
+    const combinedMessages = [...newMessages, ...messages];
+    setMessages(combinedMessages);
   }, [messages]);
 
   return (
-    <Grid container direction="column">
-      <Grid
+    <>
+      <MessagesList
+        messages={messages}
+        startReached={startReached}
+        virtuoso={virtuoso}
+      />
+      {/* <Grid container direction="column">
+        <Grid item container direction="column"></Grid> */}
+      {/* <Grid
         item
         container
         direction="column"
         spacing={1}
         sx={{ pt: 2, pb: 8, pl: 1, pr: 1 }}
       >
+
+
         {messages
           ? messages.map((message, index) => {
               if (
@@ -83,40 +121,41 @@ function ChatPage(props) {
             })
           : "Not loaded yet."}
         <Grid item container ref={bottomRef} />
-      </Grid>
+      </Grid> */}
 
-      <Grid item container>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          width="1"
-          position="fixed"
-          bottom="0"
-        >
-          <TextField
-            fullWidth
-            id="message"
-            type="text"
-            label="Type a message..."
-            margin="dense"
-            variant="filled"
-            value={message}
-            onChange={(event) => setMessage(event.currentTarget.value)}
-            InputProps={{
-              endAdornment: (
-                <Button type="submit" variant="contained">
-                  <Typography>Send</Typography>
-                </Button>
-              ),
-            }}
-            sx={{
-              backgroundColor: (theme) => theme.palette.secondary.main,
-            }}
-          />
-        </Box>
-      </Grid>
-    </Grid>
+      {/* <Grid item container> */}
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+        width="1"
+        position="fixed"
+        bottom="0"
+      >
+        <TextField
+          fullWidth
+          id="message"
+          type="text"
+          label="Type a message..."
+          margin="dense"
+          variant="filled"
+          value={message}
+          onChange={(event) => setMessage(event.currentTarget.value)}
+          InputProps={{
+            endAdornment: (
+              <Button type="submit" variant="contained">
+                <Typography>Send</Typography>
+              </Button>
+            ),
+          }}
+          sx={{
+            backgroundColor: (theme) => theme.palette.secondary.main,
+          }}
+        />
+      </Box>
+      {/* </Grid> */}
+      {/* </Grid> */}
+    </>
   );
 }
 

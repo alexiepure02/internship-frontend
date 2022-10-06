@@ -1,3 +1,5 @@
+import Sidebar from "./Sidebar";
+
 import {
   AppBar,
   Typography,
@@ -5,34 +7,31 @@ import {
   Toolbar,
   IconButton,
   Avatar,
+  Drawer,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+
 import React, { useState } from "react";
-import { useContext } from "react";
-import { UserContext } from "../UserContext";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import Divider from "@mui/material/Divider";
-import Sidebar from "./Sidebar";
-import jwtDecode from "jwt-decode";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
+import {
+  logout,
+  checkIfTokenExpired,
+  checkIfAuthenticated,
+  getUserInfo,
+} from "../../functions/authentication";
+
 const Header = () => {
-  const { idLogged, idFriend } = useContext(UserContext);
-
-  const isAuthenticated = !!localStorage.getItem("auth-token");
-
   const [sidebar, setSidebar] = useState(false);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      const userInfo = jwtDecode(localStorage.getItem("auth-token"));
+  const isAuthenticated = checkIfAuthenticated();
+  const displayName = getUserInfo().name;
 
-      console.log(userInfo);
-    }
+  useEffect(() => {
+    if (isAuthenticated && checkIfTokenExpired()) logout();
   }, [isAuthenticated]);
 
   const toggleDrawer = (open) => (event) => {
@@ -46,44 +45,10 @@ const Header = () => {
     setSidebar(open);
   };
 
-  const goToLogin = () => {
+  const onClickLogout = () => {
+    logout();
     navigate("/login");
   };
-
-  const goToAccount = () => {
-    navigate("/account");
-  };
-
-  const logout = () => {
-    localStorage.removeItem("auth-token");
-    console.log("logged out");
-    goToLogin();
-  };
-
-  const backupNav = (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/friends">Friends</Link>
-        </li>
-        <li>
-          <Link to="/chat">Chat</Link>
-        </li>
-        <li>
-          <Link to="/login">Login</Link>
-        </li>
-        <li>
-          <Link to="/register">Register</Link>
-        </li>
-        <li>
-          <Link to="/account">Account</Link>
-        </li>
-        <li>
-          <Link to="/friend-requests">Friend requests</Link>
-        </li>
-      </ul>
-    </nav>
-  );
 
   return (
     <>
@@ -99,17 +64,32 @@ const Header = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {idLogged != 0 && <Typography>Connected as: {idLogged}</Typography>}
-            {idFriend != 0 && <Typography>Friend is: {idFriend}</Typography>}
-          </Typography>
 
-          {isAuthenticated ? (
-            <IconButton onClick={goToAccount} sx={{p: 0}}>
-              <Avatar></Avatar>
+          <Typography sx={{ flexGrow: 1 }} />
+
+          {checkIfAuthenticated() ? (
+            <IconButton
+              onClick={(e) => {
+                navigate("/account");
+              }}
+              sx={{ p: 0 }}
+            >
+              <Avatar
+                sx={{
+                  color: (theme) => theme.palette.primary.main,
+                  backgroundColor: (theme) => theme.palette.secondary.main,
+                }}
+              >
+                {displayName[0].charAt(0).toUpperCase()}
+              </Avatar>
             </IconButton>
           ) : (
-            <Button color="inherit" onClick={goToLogin}>
+            <Button
+              color="inherit"
+              onClick={(e) => {
+                navigate("/login");
+              }}
+            >
               Login
             </Button>
           )}
@@ -125,7 +105,7 @@ const Header = () => {
           },
         }}
       >
-        <Sidebar toggleDrawer={toggleDrawer} logout={logout} />
+        <Sidebar toggleDrawer={toggleDrawer} onClickLogout={onClickLogout} />
       </Drawer>
 
       <Outlet />

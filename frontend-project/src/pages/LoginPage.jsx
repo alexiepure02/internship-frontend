@@ -1,16 +1,16 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { Box } from "@mui/material";
-import { useContext } from "react";
-import { UserContext } from "../components/UserContext";
+import {
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Box,
+  Alert,
+} from "@mui/material";
+
 import { useState } from "react";
-import { Alert } from "@mui/material";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+
+import { login } from "../functions/authentication";
 
 function LoginPage(props) {
   const [username, setUsername] = useState("");
@@ -31,18 +31,6 @@ function LoginPage(props) {
     } catch (err) {
       setError(err);
     }
-  };
-
-  const login = async (username, password) => {
-    const response = await axios.post(
-      "https://localhost:7228/api/users/login",
-      {
-        userName: username,
-        password: password,
-      }
-    );
-
-    localStorage.setItem("auth-token", response.data.token);
   };
 
   return (

@@ -1,12 +1,9 @@
-import { Avatar, Typography } from "@mui/material";
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../components/UserContext";
-import { Container, Box } from "@mui/material";
-import jwtDecode from "jwt-decode";
+import { Avatar, Typography, Container, Box } from "@mui/material";
+
+import { getUserInfo } from "../functions/authentication";
 
 const AccountPage = (props) => {
-  const userInfo = jwtDecode(localStorage.getItem("auth-token"));
+  const userInfo = getUserInfo();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -20,8 +17,10 @@ const AccountPage = (props) => {
       >
         {userInfo && (
           <>
-          <Avatar sx={{width: 100, height: 100}}></Avatar>
-            <Typography variant="h4" sx={{pt: 2}}>Name: {userInfo.name}</Typography>
+            <Avatar sx={{ width: 100, height: 100 }}></Avatar>
+            <Typography variant="h4" sx={{ pt: 2 }}>
+              Name: {userInfo.name}
+            </Typography>
             <Typography variant="h4">Id: {userInfo.id}</Typography>
           </>
         )}

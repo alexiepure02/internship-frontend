@@ -1,23 +1,22 @@
 import {
-  Avatar,
   Box,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemButton,
   ListItemText,
   Switch,
   Typography,
   Button,
 } from "@mui/material";
-import { useContext } from "react";
+
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
+
+import { checkIfAuthenticated } from "../../functions/authentication";
 
 const Sidebar = (props) => {
-  const isAuthenticated = !!localStorage.getItem("auth-token");
-
   const navigate = useNavigate();
+
+  const isAuthenticated = checkIfAuthenticated();
 
   const handleToggleDarkMode = () => {
     console.log("dark mode toggled");
@@ -37,6 +36,10 @@ const Sidebar = (props) => {
       path: "/friend-requests",
     },
   ];
+
+  const goToLogin = () => {
+    navigate("/login");
+  };
 
   return (
     <Box width={250} onKeyDown={props.toggleDrawer(false)} sx={{ m: 2 }}>
@@ -69,7 +72,7 @@ const Sidebar = (props) => {
           <Button
             variant="contained"
             color="error"
-            onClick={props.logout}
+            onClick={props.onClickLogout}
             sx={{ position: "fixed", bottom: 20, left: 94 }}
           >
             Logout
@@ -81,9 +84,7 @@ const Sidebar = (props) => {
           <Button
             variant="outlined"
             color="inherit"
-            onClick={(event) => {
-              navigate("/login");
-            }}
+            onClick={goToLogin}
             sx={{ mt: 2 }}
           >
             Login

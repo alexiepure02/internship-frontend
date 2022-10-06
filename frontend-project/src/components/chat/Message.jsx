@@ -1,5 +1,4 @@
-import { Grid, Paper, Box, Typography, Card, Tooltip } from "@mui/material";
-import { red } from "@mui/material/colors";
+import { Typography, Card, Tooltip } from "@mui/material";
 
 function Message(props) {
   return (

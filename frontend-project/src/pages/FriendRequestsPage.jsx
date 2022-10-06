@@ -1,80 +1,80 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import { Alert, Avatar, Icon, ListItemAvatar, Typography } from "@mui/material";
-import { Container } from "@mui/material";
-import CancelIcon from "@mui/icons-material/Cancel";
-import CheckIcon from "@mui/icons-material/Check";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import FriendRequest from "../components/friend-requests/FriendRequestItem";
 
-import { useContext } from "react";
-import { UserContext } from "../components/UserContext";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import FriendRequest from "../components/friend-requests/FriendRequest";
-import jwtDecode from "jwt-decode";
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItem,
+  Alert,
+  Container,
+  TextField,
+  Button,
+  Divider,
+} from "@mui/material";
 
-function FriendRequestsPage(props) {
-  const token = localStorage.getItem("auth-token");
-  const userId = jwtDecode(token).id;
+import { useState, useEffect } from "react";
 
+import {
+  addFriendRequest,
+  getFriendRequests,
+  updateFriendRequest,
+} from "../functions/api";
+import SearchBar from "../components/UI/SearchBar";
+import FriendRequestItem from "../components/friend-requests/FriendRequestItem";
+
+function FriendRequestsPage() {
   const [page, reloadPage] = useState();
   const [friendRequests, setFriendRequests] = useState(null);
-  const [idFriend, setIdFriend] = useState("");
+  const [friendId, setFriendId] = useState("");
   const [message, setMessage] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     const fetchFriendRequests = async () => {
-      const response = await axios.get(
-        "https://localhost:7228/api/users/" + userId + "/friend-requests",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setFriendRequests(response.data);
+      const friendRequests = await getFriendRequests();
+      if (friendRequests.length !== 0) {
+        setFriendRequests(friendRequests);
+      } else {
+        setFriendRequests(null);
+      }
     };
 
     fetchFriendRequests();
   }, [page]);
 
-  const addFriend = async (event) => {
+  const sendFriendRequest = async (event) => {
     try {
-      await axios.post(
-        "https://localhost:7228/api/users/friend-requests",
-        {
-          idUser: idFriend,
-          idRequester: userId,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMessage(
-        <Alert>Friend request sent succesfully.</Alert>
-      );
+      await addFriendRequest(friendId);
+      setMessage(<Alert>Friend request sent succesfully.</Alert>);
     } catch (err) {
-      setMessage(
-        <Alert severity="error">Invalid id.</Alert>
-      );
+      setMessage(<Alert severity="error">Invalid id.</Alert>);
     }
-    
-    setIdFriend("");
+
+    setFriendId("");
   };
 
-  const handleListItemClick = async (event, idRequester, accepted) => {
-    await axios.put(
-      "https://localhost:7228/api/users/friend-requests/" + accepted,
-      {
-        idUser: userId,
-        idRequester: idRequester,
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+  const handleListItemClick = async (event, requesterId, accepted) => {
+    await updateFriendRequest(requesterId, accepted);
     reloadPage({});
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchInput(event.target.value);
+  };
+
+  const checkElementIsSearched = (friendRequest) => {
+    if (searchInput.length === 0) return true;
+
+    if (searchInput.length !== 0)
+      if (
+        friendRequest.displayName
+          .toLowerCase()
+          .includes(searchInput.toLowerCase())
+      )
+        return true;
+      else if (friendRequest.id == searchInput) return true;
+
+    return false;
   };
 
   return (
@@ -95,42 +95,41 @@ function FriendRequestsPage(props) {
           id="friend-request"
           label="Send a request"
           name="friend-request"
-          value={idFriend}
-          onChange={(event) => setIdFriend(event.currentTarget.value)}
+          value={friendId}
+          onChange={(event) => setFriendId(event.currentTarget.value)}
         />
         <Button
+          type="submit"
           variant="contained"
-          onClick={(event) => addFriend(event)}
-          sx={{ mt: 3, mb: 2 }}
+          onClick={(event) => sendFriendRequest(event)}
+          sx={{ mt: 1, mb: 2 }}
         >
           Add
         </Button>
 
+        {friendRequests && (
+          <>
+            <SearchBar
+              searchInput={searchInput}
+              handleSearchChange={handleSearchChange}
+            />
+          </>
+        )}
+
         <List>
           {friendRequests
-            ? friendRequests.map((friendRequest, index) => (
-                <ListItem key={index}>
-                  <FriendRequest
-                    id={friendRequest.id}
-                    name={friendRequest.displayName}
-                  />
-                  <ListItemButton
-                    onClick={(event) =>
-                      handleListItemClick(event, friendRequest.id, true)
-                    }
-                  >
-                    <CheckIcon />
-                  </ListItemButton>
-                  <ListItemButton
-                    onClick={(event) =>
-                      handleListItemClick(event, friendRequest.id, false)
-                    }
-                  >
-                    <CancelIcon />
-                  </ListItemButton>
-                </ListItem>
-              ))
-            : "Not loaded yet."}
+            ? friendRequests.map((friendRequest, index) => {
+                if (checkElementIsSearched(friendRequest))
+                  return (
+                    <FriendRequestItem
+                      key={friendRequest.id}
+                      id={friendRequest.id}
+                      name={friendRequest.displayName}
+                      handleListItemClick={handleListItemClick}
+                    />
+                  );
+              })
+            : "No new friend requests."}
         </List>
       </Box>
     </Container>

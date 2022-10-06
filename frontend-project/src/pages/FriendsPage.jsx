@@ -1,82 +1,83 @@
 import Friend from "../components/friends/Friend";
+import SearchBar from "../components/UI/SearchBar";
 
-import * as React from "react";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-import {
-  Avatar,
-  Icon,
-  ListItem,
-  ListItemAvatar,
-  Typography,
-} from "@mui/material";
-import { Container } from "@mui/material";
+import { Box, List, Typography, Container } from "@mui/material";
 
-import { useContext } from "react";
-import { UserContext } from "../components/UserContext";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import jwtDecode from "jwt-decode";
-import Chat from "../components/chat/Chat";
+import { useState, useEffect } from "react";
 
-function FriendsPage(props) {
-  const { idLogged, setIdFriend } = useContext(UserContext);
+import { getFriends } from "../functions/api";
+import FriendItem from "../components/friends/FriendItem";
 
-  const token = localStorage.getItem("auth-token");
-  const userId = jwtDecode(token).id;
-
+function FriendsPage() {
   const [page, reloadPage] = useState();
   const [friends, setFriends] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
-    // reset idFriend when re-entering this page
-    setIdFriend(0);
-
     const fetchFriends = async () => {
-      const response = await axios.get(
-        "https://localhost:7228/api/users/" + userId + "/friends",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      if (response.data.length !== 0) {
-        setFriends(response.data);
+      const friends = await getFriends();
+      if (friends.length !== 0) {
+        setFriends(friends);
+      } else {
+        setFriends(null);
       }
     };
 
     fetchFriends();
   }, [page]);
 
+  const handleSearchChange = (event) => {
+    setSearchInput(event.target.value);
+  };
+
+  const checkElementIsSearched = (friend) => {
+    if (searchInput.length === 0) return true;
+
+    if (searchInput.length !== 0)
+      if (friend.displayName.toLowerCase().includes(searchInput.toLowerCase()))
+        return true;
+      else if (friend.id == searchInput) return true;
+
+    return false;
+  };
+
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <List>
-          {friends ? (
-            friends.map((friend, index) => (
-              <Friend
-                key={friend.id}
-                id={friend.id}
-                name={friend.displayName}
-                reloadPage={reloadPage}
-              />
-            ))
-          ) : (
-            <Typography>No friends.</Typography>
+    <>
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {friends && (
+            <SearchBar
+              searchInput={searchInput}
+              handleSearchChange={handleSearchChange}
+            />
           )}
-        </List>
-      </Box>
-    </Container>
+          <List>
+            {friends ? (
+              friends.map((friend, index) => {
+                if (checkElementIsSearched(friend))
+                  return (
+                    <FriendItem
+                      key={friend.id}
+                      id={friend.id}
+                      name={friend.displayName}
+                      reloadPage={reloadPage}
+                    />
+                  );
+              })
+            ) : (
+              <Typography>No friends.</Typography>
+            )}
+          </List>
+        </Box>
+      </Container>
+    </>
   );
 }
 
