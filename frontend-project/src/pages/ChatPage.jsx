@@ -44,6 +44,7 @@ function ChatPage(props) {
         offset,
         numberOfMessages
       );
+      console.log(initialMessages);
       setMessages(initialMessages);
     };
 
@@ -53,8 +54,10 @@ function ChatPage(props) {
   }, []);
 
   const startReached = useCallback(async () => {
-    setOffset(offset + numberOfMessages);
+    console.log("Chat: startReached");
 
+    setOffset(offset + numberOfMessages);
+    
     const newMessages = await getSomeMessages(
       friendId,
       offset,

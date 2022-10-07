@@ -8,6 +8,21 @@ import { useLocation } from "react-router-dom";
 import { getMessages, postMessage } from "../../functions/api";
 
 const Chat = () => {
+
+
+
+
+
+
+// MOVE ALL FUNCTIONALITY FROM CHATPAGE TO CHAT SO THAT "CHAT" STATE IS ALL UPDATED HERE
+// THEN PASSED TO CHAT PAGE (INITIALLY WITH ONLY 10 MESSAGES)
+
+
+
+
+
+
+
   const [connection, setConnection] = useState(null);
   const [chat, setChat] = useState([]);
   const latestChat = useRef(null);
@@ -26,7 +41,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    fetchMessages();
+    //fetchMessages();
 
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7228/hub/chat")

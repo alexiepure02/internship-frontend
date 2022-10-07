@@ -9,12 +9,11 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Virtuoso } from "react-virtuoso";
 import Message from "./Message";
 
-const START_INDEX = 500;
-
 function MessagesList({ messages, startReached, virtuoso }) {
-  // START_INDEX starting value is the max value, makes figuring out the index in the messages array easier
+  const startIndex = messages.length;
+
   const [firstItemIndex, setFirstItemIndex] = useState(
-    START_INDEX - messages.length
+    startIndex - messages.length
   );
 
   console.log("MessagesList: Starting firstItemIndex", firstItemIndex);
@@ -22,7 +21,7 @@ function MessagesList({ messages, startReached, virtuoso }) {
 
   // keep a copy of messages so I can set the next first item index before new messages set
   const internalMessages = useMemo(() => {
-    const nextFirstItemIndex = START_INDEX - messages.length;
+    const nextFirstItemIndex = startIndex - messages.length;
     setFirstItemIndex(nextFirstItemIndex);
     return messages;
   }, [messages]);
@@ -44,18 +43,25 @@ function MessagesList({ messages, startReached, virtuoso }) {
     // </Grid>
   }, []);
 
-  // setting 'auto' for behavior does help in this sample, but not in my actual code
   const followOutput = useCallback((isAtBottom) => {
     console.log("MessagesList: followOutput isAtBottom", isAtBottom);
     return isAtBottom ? "smooth" : false;
   }, []);
 
   return (
-    <List
-      sx={{
-        height: 1000,
-        pb: 8,
-        position: "relative"
+    // <List
+    //   sx={{
+    //     height: 1000,
+    //     pb: 8,
+    //     position: "relative",
+    //   }}
+    // >
+    <div
+      style={{
+        display: "flex",
+        flexFlow: "column",
+        height: "100vh",
+        width: "350px",
       }}
     >
       <Virtuoso
@@ -66,9 +72,10 @@ function MessagesList({ messages, startReached, virtuoso }) {
         data={internalMessages}
         startReached={startReached}
         followOutput={followOutput}
-        style={{ height: "100%", overscrollBehavior: "contain" }}
+        style={{ flex: "1 1 auto", overscrollBehavior: "contain" }}
       />
-    </List>
+    </div>
+    //</List>
   );
 }
 

@@ -13,6 +13,7 @@ import { useState } from "react";
 import { deleteFriend } from "../../functions/api";
 import ConfirmDialog from "./ConfirmDialog";
 import Friend from "./Friend";
+import { useNavigate } from "react-router-dom";
 
 function FriendItem(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -21,6 +22,8 @@ function FriendItem(props) {
   const [selectedValue, setSelectedValue] = useState(
     "clicked outside of dialog."
   );
+
+  const navigate = useNavigate();
 
   const handleOptionsClick = (event) => {
     setAnchorEl(event.currentTarget);

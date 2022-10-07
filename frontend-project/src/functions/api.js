@@ -104,3 +104,13 @@ export const updateFriendRequest = async (requesterId, accepted) => {
     { headers: { Authorization: `Bearer ${token}` } }
   );
 };
+
+export const updateDisplayName = async (newDisplayName) => {
+  const token = getToken();
+  const userId = getUserInfo().id;
+
+  await axios.put(
+    "https://localhost:7228/api/users/" + userId + "/" + newDisplayName,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+};

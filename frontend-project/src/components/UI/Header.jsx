@@ -28,7 +28,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const isAuthenticated = checkIfAuthenticated();
-  const displayName = getUserInfo().name;
+  const displayName = isAuthenticated ? getUserInfo().name : "";
 
   useEffect(() => {
     if (isAuthenticated && checkIfTokenExpired()) logout();
