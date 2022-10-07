@@ -5,43 +5,53 @@ import ChatPage from "../../pages/ChatPage";
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
-import { getMessages, postMessage } from "../../functions/api";
+import {
+  getMessages,
+  getNumberOfMessages,
+  getSomeMessages,
+  postMessage,
+} from "../../functions/api";
+import { useCallback } from "react";
 
 const Chat = () => {
-
-
-
-
-
-
-// MOVE ALL FUNCTIONALITY FROM CHATPAGE TO CHAT SO THAT "CHAT" STATE IS ALL UPDATED HERE
-// THEN PASSED TO CHAT PAGE (INITIALLY WITH ONLY 10 MESSAGES)
-
-
-
-
-
-
-
   const [connection, setConnection] = useState(null);
-  const [chat, setChat] = useState([]);
+  const [numberOfTotalMessages, setNumberOfTotalMessages] = useState(null);
+  const [messages, setMessages] = useState([]);
   const latestChat = useRef(null);
+  const [offset, setOffset] = useState(0);
 
   const location = useLocation();
   const friendId = location.state.idFriend;
 
-  latestChat.current = chat;
+  const virtuoso = useRef(null);
 
-  const fetchMessages = async () => {
+  const pageSize = 10;
+
+  latestChat.current = messages;
+
+  const fetchTotalMessages = async () => {
     try {
-      setChat(await getMessages(friendId));
+      setMessages(await getMessages(friendId));
     } catch (e) {
       console.log(e);
     }
   };
 
+  const fetchNumberOfTotalMessages = async () => {
+    const nr = await getNumberOfMessages(friendId);
+    setNumberOfTotalMessages(nr);
+  };
+
+  const fetchInitialMessages = async () => {
+    const initialMessages = await getSomeMessages(friendId, offset, pageSize);
+    setMessages(initialMessages);
+  };
+
   useEffect(() => {
-    //fetchMessages();
+    fetchInitialMessages();
+    fetchNumberOfTotalMessages();
+
+    setOffset(offset + pageSize);
 
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7228/hub/chat")
@@ -58,7 +68,7 @@ const Chat = () => {
 
             updatedChat.push(message);
 
-            setChat(updatedChat);
+            setMessages(updatedChat);
           });
         })
         .catch((e) => console.log("Connection failed: ", e));
@@ -86,8 +96,25 @@ const Chat = () => {
     }
   };
 
+  const startReached = useCallback(async () => {
+    console.log("reached start of chat");
+
+    setOffset(offset + pageSize);
+
+    const newMessages = await getSomeMessages(friendId, offset, pageSize);
+
+    const combinedMessages = [...newMessages, ...messages];
+    setMessages(combinedMessages);
+  }, [messages]);
+
   return (
-    <ChatPage sendMessage={sendMessage} messages={chat} friendId={friendId} />
+    <ChatPage
+      sendMessage={sendMessage}
+      messages={messages}
+      friendId={friendId}
+      startReached={startReached}
+      numberOfTotalMessages={numberOfTotalMessages}
+    />
   );
 };
 

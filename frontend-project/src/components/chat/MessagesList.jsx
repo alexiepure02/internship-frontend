@@ -1,23 +1,22 @@
-import {
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
-} from "@mui/material";
-import React, { useCallback, useMemo, useState } from "react";
+import { Grid, List } from "@mui/material";
+import React, { forwardRef, useCallback, useMemo, useState } from "react";
 import { Virtuoso } from "react-virtuoso";
 import Message from "./Message";
 
-function MessagesList({ messages, startReached, virtuoso }) {
-  const startIndex = messages.length;
-
+function MessagesList({
+  messages,
+  startReached,
+  virtuoso,
+  startIndex,
+  userId,
+  friendId,
+}) {
   const [firstItemIndex, setFirstItemIndex] = useState(
     startIndex - messages.length
   );
 
-  console.log("MessagesList: Starting firstItemIndex", firstItemIndex);
-  console.log("MessagesList: Starting messages length", messages.length);
+  // console.log("MessagesList: Starting firstItemIndex", firstItemIndex);
+  // console.log("MessagesList: Starting messages length", messages.length);
 
   // keep a copy of messages so I can set the next first item index before new messages set
   const internalMessages = useMemo(() => {
@@ -28,19 +27,27 @@ function MessagesList({ messages, startReached, virtuoso }) {
 
   const itemContent = useCallback((index, message) => {
     //<Grid item container key={index} justifyContent="flex-end">
+
+    let position = "start";
+    let color = "main";
+
+    if (message.idSender == userId && message.idReceiver == friendId) {
+      position = "end";
+      color = "dark";
+    }
+
     return (
-      <ListItem>
+      <Grid item container justifyContent={"flex-" + position} sx={{pb: 1, pl: 1, pr: 1}}>
         <Message
-          position="end"
-          backgroundColor={(theme) => theme.palette.secondary.dark}
+          position={position}
+          backgroundColor={"secondary." + color}
           idSender={message.idSender}
           idReceiver={message.idReceiver}
           text={message.text}
           time={message.dateTime}
         />
-      </ListItem>
+      </Grid>
     );
-    // </Grid>
   }, []);
 
   const followOutput = useCallback((isAtBottom) => {
@@ -49,19 +56,19 @@ function MessagesList({ messages, startReached, virtuoso }) {
   }, []);
 
   return (
-    // <List
-    //   sx={{
-    //     height: 1000,
-    //     pb: 8,
-    //     position: "relative",
-    //   }}
+    // <Grid
+    //   item
+    //   container
+    //   direction="column"
+    //   spacing={1}
+    //   sx={{ pt: 2, pb: 8, pl: 1, pr: 1, height: 750, width: 500 }}
     // >
     <div
       style={{
         display: "flex",
         flexFlow: "column",
-        height: "100vh",
-        width: "350px",
+        height: "80vh",
+        width: "400px",
       }}
     >
       <Virtuoso
@@ -75,7 +82,7 @@ function MessagesList({ messages, startReached, virtuoso }) {
         style={{ flex: "1 1 auto", overscrollBehavior: "contain" }}
       />
     </div>
-    //</List>
+    // </Grid>
   );
 }
 

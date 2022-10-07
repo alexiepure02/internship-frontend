@@ -31,7 +31,7 @@ const Header = () => {
   const displayName = isAuthenticated ? getUserInfo().name : "";
 
   useEffect(() => {
-    if (isAuthenticated && checkIfTokenExpired()) logout();
+    if (isAuthenticated) if (checkIfTokenExpired()) logout();
   }, [isAuthenticated]);
 
   const toggleDrawer = (open) => (event) => {
@@ -67,7 +67,7 @@ const Header = () => {
 
           <Typography sx={{ flexGrow: 1 }} />
 
-          {checkIfAuthenticated() ? (
+          {isAuthenticated ? (
             <IconButton
               onClick={(e) => {
                 navigate("/account");

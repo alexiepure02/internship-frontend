@@ -32,6 +32,22 @@ export const getSomeMessages = async (friendId, offset, numberOfMessages) => {
   return response.data;
 };
 
+export const getNumberOfMessages = async (friendId) => {
+  const token = getToken();
+  const userId = getUserInfo().id;
+
+  const response = await axios.get(
+    "https://localhost:7228/api/messages/" +
+      userId +
+      "," +
+      friendId +
+      "/length",
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  return response.data;
+};
+
 export const postMessage = async (message, connectionId) => {
   const token = getToken();
 

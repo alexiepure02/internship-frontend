@@ -1,26 +1,17 @@
 import { TextField, Button, Grid, Typography, Box } from "@mui/material";
 
-import { useEffect, useState, useRef } from "react";
-import { loremIpsum } from "react-lorem-ipsum";
+import { useState } from "react";
 
 import { getUserInfo } from "../functions/authentication";
-import { useCallback } from "react";
 import MessagesList from "../components/chat/MessagesList";
-import { getSomeMessages } from "../functions/api";
 
 globalThis.VIRTUOSO_LOG_LEVEL = 0;
 
 function ChatPage(props) {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState(props.messages);
-  const [offset, setOffset] = useState(0);
-
-  const virtuoso = useRef(null);
 
   const userId = getUserInfo().id;
   const friendId = props.friendId;
-
-  const numberOfMessages = 10;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -33,47 +24,15 @@ function ChatPage(props) {
     setMessage("");
   };
 
-  useEffect(() => {
-    setMessages(props.messages);
-  }, [props.messages]);
-
-  useEffect(() => {
-    const fetchInitialMessages = async () => {
-      const initialMessages = await getSomeMessages(
-        friendId,
-        offset,
-        numberOfMessages
-      );
-      console.log(initialMessages);
-      setMessages(initialMessages);
-    };
-
-    setOffset(offset + numberOfMessages);
-
-    fetchInitialMessages();
-  }, []);
-
-  const startReached = useCallback(async () => {
-    console.log("Chat: startReached");
-
-    setOffset(offset + numberOfMessages);
-    
-    const newMessages = await getSomeMessages(
-      friendId,
-      offset,
-      numberOfMessages
-    );
-
-    const combinedMessages = [...newMessages, ...messages];
-    setMessages(combinedMessages);
-  }, [messages]);
-
   return (
     <>
       <MessagesList
-        messages={messages}
-        startReached={startReached}
-        virtuoso={virtuoso}
+        userId={userId}
+        friendId={friendId}
+        messages={props.messages}
+        startReached={props.startReached}
+        virtuoso={props.virtuoso}
+        startIndex={props.numberOfTotalMessages}
       />
       {/* <Grid container direction="column">
         <Grid item container direction="column"></Grid> */}
