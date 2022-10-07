@@ -10,8 +10,12 @@ import PrivateRoutes from "./pages/PrivateRoutes";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from "react";
+import { FriendContextProvider } from "./FriendContextProvider";
 
 function App() {
+  const [friendName, setFriendName] = useState(null);
+
   const lightTheme = createTheme({
     palette: {
       primary: {
@@ -31,20 +35,25 @@ function App() {
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Header />}>
-            <Route element={<PrivateRoutes />}>
-              <Route path="friends" element={<FriendsPage />} />
-              <Route path="chat" element={<Chat />} />
-              <Route path="account" element={<AccountPage />} />
-              <Route path="friend-requests" element={<FriendRequestsPage />} />
+      <FriendContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Header />}>
+              <Route element={<PrivateRoutes />}>
+                <Route path="friends" element={<FriendsPage />} />
+                <Route path="chat" element={<Chat />} />
+                <Route path="account" element={<AccountPage />} />
+                <Route
+                  path="friend-requests"
+                  element={<FriendRequestsPage />}
+                />
+              </Route>
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
             </Route>
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </FriendContextProvider>
     </ThemeProvider>
   );
 }

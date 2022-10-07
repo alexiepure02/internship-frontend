@@ -19,6 +19,7 @@ const AccountPage = (props) => {
   const [editable, setEditable] = useState(false);
   const [updated, setUpdated] = useState(false);
   const userInfo = getUserInfo();
+  const [selectedImage, setSelectedImage] = useState(null);
   const [newName, setNewName] = useState(userInfo.name);
   const [newId, setNewId] = useState(userInfo.id);
 
@@ -29,21 +30,21 @@ const AccountPage = (props) => {
         await updateDisplayName(newName);
         setUpdated(true);
       }
+
+      if (selectedImage != null) {
+        // replace null with image from azure storage
+        console.log("updated avatar.");
+        setUpdated(true);
+      }
+      setNewName(userInfo.name);
+      setSelectedImage(null);
     }
 
     setEditable(value);
   };
 
-  const handleUploadImage = () => {
-    console.log("upload image.");
-  };
-
   const handleNameChange = (event) => {
     setNewName(event.target.value);
-  };
-
-  const handleIdChange = (event) => {
-    setNewId(event.target.value);
   };
 
   return (
@@ -61,9 +62,10 @@ const AccountPage = (props) => {
             <>
               {editable ? (
                 <>
-                  <Tooltip title="Upload an image" placement="top">
+                  <Box display="flex" alignItems="center">
                     <Avatar
-                      onClick={handleUploadImage}
+                      //onClick={handleUploadImage}
+                      src={selectedImage && selectedImage}
                       sx={{
                         cursor: "pointer",
                         width: 100,
@@ -76,16 +78,41 @@ const AccountPage = (props) => {
                     >
                       {userInfo.name.charAt(0).toUpperCase()}
                     </Avatar>
-                  </Tooltip>
-
-                  <Typography variant="h5" sx={{ mt: 4 }}>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      sx={{ ml: 4 }}
+                    >
+                      Change avatar
+                      <input
+                        hidden
+                        type="file"
+                        onChange={(event) =>
+                          setSelectedImage(
+                            URL.createObjectURL(event.target.files[0])
+                          )
+                        }
+                      />
+                    </Button>
+                  </Box>
+                  <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                     Name:
                   </Typography>
-                  <TextField value={newName} onChange={handleNameChange} />
+                  <TextField
+                    value={newName}
+                    onChange={handleNameChange}
+                    InputProps={{
+                      sx: {
+                        "& input": {
+                          textAlign: "center",
+                        },
+                      },
+                    }}
+                  />
                   <Button
                     variant="contained"
                     onClick={(event) => handleEditableClick(false)}
-                    sx={{ mt: 4 }}
+                    sx={{ mt: 5 }}
                   >
                     Done
                   </Button>

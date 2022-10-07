@@ -14,6 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useContext } from "react";
 
 import {
   logout,
@@ -21,8 +22,11 @@ import {
   checkIfAuthenticated,
   getUserInfo,
 } from "../../functions/authentication";
+import { FriendContext } from "../../FriendContextProvider";
 
 const Header = () => {
+  const { friendName } = useContext(FriendContext);
+
   const [sidebar, setSidebar] = useState(false);
 
   const navigate = useNavigate();
@@ -65,7 +69,7 @@ const Header = () => {
             <MenuIcon />
           </IconButton>
 
-          <Typography sx={{ flexGrow: 1 }} />
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>{friendName}</Typography>
 
           {isAuthenticated ? (
             <IconButton

@@ -37,7 +37,12 @@ function MessagesList({
     }
 
     return (
-      <Grid item container justifyContent={"flex-" + position} sx={{pb: 1, pl: 1, pr: 1}}>
+      <Grid
+        item
+        container
+        justifyContent={"flex-" + position}
+        sx={{ pb: 1, pl: 1, pr: 1 }}
+      >
         <Message
           position={position}
           backgroundColor={"secondary." + color}
@@ -51,8 +56,8 @@ function MessagesList({
   }, []);
 
   const followOutput = useCallback((isAtBottom) => {
-    console.log("MessagesList: followOutput isAtBottom", isAtBottom);
-    return isAtBottom ? "smooth" : false;
+    console.log("is at bottom: ", isAtBottom);
+    return isAtBottom ? "auto" : false;
   }, []);
 
   return (

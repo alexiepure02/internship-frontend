@@ -127,6 +127,7 @@ export const updateDisplayName = async (newDisplayName) => {
 
   await axios.put(
     "https://localhost:7228/api/users/" + userId + "/" + newDisplayName,
+    {},
     { headers: { Authorization: `Bearer ${token}` } }
   );
 };

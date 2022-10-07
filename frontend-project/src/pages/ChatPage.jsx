@@ -48,7 +48,7 @@ function ChatPage(props) {
         {messages
           ? messages.map((message, index) => {
               if (
-                message.idSender == userId &&
+                message.idSender == userInfo.id &&
                 message.idReceiver == friendId
               ) {
                 return (
@@ -65,7 +65,7 @@ function ChatPage(props) {
                 );
               } else if (
                 message.idSender == friendId &&
-                message.idReceiver == userId
+                message.idReceiver == userInfo.id
               ) {
                 return (
                   <Grid item container key={index} justifyContent="flex-start">

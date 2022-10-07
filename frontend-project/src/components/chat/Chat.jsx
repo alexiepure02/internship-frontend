@@ -12,8 +12,12 @@ import {
   postMessage,
 } from "../../functions/api";
 import { useCallback } from "react";
+import { useContext } from "react";
+import { FriendContext } from "../../FriendContextProvider";
 
 const Chat = () => {
+  const { setFriendName } = useContext(FriendContext);
+
   const [connection, setConnection] = useState(null);
   const [numberOfTotalMessages, setNumberOfTotalMessages] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -22,6 +26,7 @@ const Chat = () => {
 
   const location = useLocation();
   const friendId = location.state.idFriend;
+  const friendName = location.state.nameFriend;
 
   const virtuoso = useRef(null);
 
@@ -48,6 +53,8 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    setFriendName(friendName);
+
     fetchInitialMessages();
     fetchNumberOfTotalMessages();
 
@@ -75,6 +82,8 @@ const Chat = () => {
 
       setConnection(newConnection);
     }
+
+    return () => setFriendName(null);
   }, []);
 
   const sendMessage = async (ifSender, idReceiver, text) => {
@@ -112,6 +121,7 @@ const Chat = () => {
       sendMessage={sendMessage}
       messages={messages}
       friendId={friendId}
+      virtuoso={virtuoso}
       startReached={startReached}
       numberOfTotalMessages={numberOfTotalMessages}
     />

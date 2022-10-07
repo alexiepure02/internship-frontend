@@ -47,7 +47,7 @@ function FriendItem(props) {
   };
 
   const handleFriendClick = (event, index) => {
-    navigate("/chat", { state: { idFriend: index } });
+    navigate("/chat", { state: { idFriend: index, nameFriend: props.name } });
   };
 
   return (
