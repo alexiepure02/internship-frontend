@@ -66,14 +66,14 @@ function MessagesList({
     //   container
     //   direction="column"
     //   spacing={1}
-    //   sx={{ pt: 2, pb: 8, pl: 1, pr: 1, height: 750, width: 500 }}
+    //   sx={{ pt: 2, pb: 8, pl: 1, pr: 1, minHeight: "95%", width: "100vh" }}
     // >
     <div
       style={{
+        alignSelf: "stretch",
         display: "flex",
         flexFlow: "column",
-        height: "80vh",
-        width: "400px",
+        flexGrow: 1,
       }}
     >
       <Virtuoso
@@ -87,7 +87,7 @@ function MessagesList({
         style={{ flex: "1 1 auto", overscrollBehavior: "contain" }}
       />
     </div>
-    // </Grid>
+    //</Grid>
   );
 }
 

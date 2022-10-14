@@ -26,17 +26,18 @@ function ChatPage(props) {
 
   return (
     <>
-      <MessagesList
-        userId={userId}
-        friendId={friendId}
-        messages={props.messages}
-        startReached={props.startReached}
-        virtuoso={props.virtuoso}
-        startIndex={props.numberOfTotalMessages}
-      />
-      {/* <Grid container direction="column">
+      <div style={{ display: "flex" ,flexDirection: "column", flexGrow: 1 }}>
+        <MessagesList
+          userId={userId}
+          friendId={friendId}
+          messages={props.messages}
+          startReached={props.startReached}
+          virtuoso={props.virtuoso}
+          startIndex={props.numberOfTotalMessages}
+        />
+        {/* <Grid container direction="column">
         <Grid item container direction="column"></Grid> */}
-      {/* <Grid
+        {/* <Grid
         item
         container
         direction="column"
@@ -85,36 +86,37 @@ function ChatPage(props) {
         <Grid item container ref={bottomRef} />
       </Grid> */}
 
-      {/* <Grid item container> */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        noValidate
-        width="1"
-        position="fixed"
-        bottom="0"
-      >
-        <TextField
-          fullWidth
-          id="message"
-          type="text"
-          label="Type a message..."
-          margin="dense"
-          variant="filled"
-          value={message}
-          onChange={(event) => setMessage(event.currentTarget.value)}
-          InputProps={{
-            endAdornment: (
-              <Button type="submit" variant="contained">
-                <Typography>Send</Typography>
-              </Button>
-            ),
-          }}
-          sx={{
-            backgroundColor: (theme) => theme.palette.secondary.main,
-          }}
-        />
-      </Box>
+        {/* <Grid item container> */}
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          width="1"
+          // position="fixed"
+          // bottom="0"
+        >
+          <TextField
+            fullWidth
+            id="message"
+            type="text"
+            label="Type a message..."
+            margin="dense"
+            variant="filled"
+            value={message}
+            onChange={(event) => setMessage(event.currentTarget.value)}
+            InputProps={{
+              endAdornment: (
+                <Button type="submit" variant="contained">
+                  <Typography>Send</Typography>
+                </Button>
+              ),
+            }}
+            sx={{
+              backgroundColor: (theme) => theme.palette.secondary.main,
+            }}
+          />
+        </Box>
+      </div>
       {/* </Grid> */}
       {/* </Grid> */}
     </>

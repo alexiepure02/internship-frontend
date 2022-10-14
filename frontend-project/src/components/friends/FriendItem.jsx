@@ -42,7 +42,8 @@ function FriendItem(props) {
     setOpenDialog(false);
     if (value === "delete clicked") {
       await deleteFriend(props.id);
-      props.reloadPage({});
+
+      props.updateOnDeleteFriend(props.id);
     }
   };
 

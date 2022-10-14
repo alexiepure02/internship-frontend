@@ -33,10 +33,24 @@ const Header = () => {
 
   const isAuthenticated = checkIfAuthenticated();
   const displayName = isAuthenticated ? getUserInfo().name : "";
-
+  const [avatarPreview, setAvatarPreview] = useState();
   useEffect(() => {
-    if (isAuthenticated) if (checkIfTokenExpired()) logout();
+    if (isAuthenticated) {
+      if (checkIfTokenExpired()) {
+        logout();
+      } else {
+        const userInfo = getUserInfo();
+        setInitialAvatar(userInfo);
+      }
+    }
   }, [isAuthenticated]);
+
+  const setInitialAvatar = async (userInfo) => {
+    if (userInfo.hasOwnProperty("avatarUri")) {
+      const blob = await fetch(userInfo.avatarUri).then((r) => r.blob());
+      setAvatarPreview(URL.createObjectURL(blob));
+    }
+  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -69,7 +83,9 @@ const Header = () => {
             <MenuIcon />
           </IconButton>
 
-          <Typography variant="h5" sx={{ flexGrow: 1 }}>{friendName}</Typography>
+          <Typography variant="h5" sx={{ flexGrow: 1 }}>
+            {friendName}
+          </Typography>
 
           {isAuthenticated ? (
             <IconButton
@@ -79,9 +95,10 @@ const Header = () => {
               sx={{ p: 0 }}
             >
               <Avatar
+                src={avatarPreview}
                 sx={{
-                  color: (theme) => theme.palette.primary.main,
-                  backgroundColor: (theme) => theme.palette.secondary.main,
+                  color: "primary.main",
+                  backgroundColor: "secondary.main",
                 }}
               >
                 {displayName[0].charAt(0).toUpperCase()}
@@ -105,7 +122,7 @@ const Header = () => {
         onClose={toggleDrawer(false)}
         PaperProps={{
           sx: {
-            backgroundColor: (theme) => theme.palette.secondary.light,
+            backgroundColor: "secondary.light",
           },
         }}
       >

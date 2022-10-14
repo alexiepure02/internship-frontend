@@ -9,7 +9,7 @@ import { getFriends } from "../functions/api";
 import FriendItem from "../components/friends/FriendItem";
 
 function FriendsPage() {
-  const [page, reloadPage] = useState();
+  // const [page, reloadPage] = useState();
   const [friends, setFriends] = useState(null);
   const [searchInput, setSearchInput] = useState("");
 
@@ -23,8 +23,10 @@ function FriendsPage() {
       }
     };
 
+    console.log("aa");
+
     fetchFriends();
-  }, [page]);
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
@@ -40,6 +42,10 @@ function FriendsPage() {
 
     return false;
   };
+
+  const updateOnDeleteFriend = (id) => {
+    setFriends(friends.filter(friend => friend.id !== id));
+  }
 
   return (
     <>
@@ -67,7 +73,8 @@ function FriendsPage() {
                       key={friend.id}
                       id={friend.id}
                       name={friend.displayName}
-                      reloadPage={reloadPage}
+                      //reloadPage={reloadPage}
+                      updateOnDeleteFriend={updateOnDeleteFriend}
                     />
                   );
               })

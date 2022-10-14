@@ -71,11 +71,14 @@ const Chat = () => {
         .then((result) => {
           // connected
           newConnection.on("ReceiveMessage", (message) => {
+            // debugger
+
             const updatedChat = [...latestChat.current];
 
             updatedChat.push(message);
 
             setMessages(updatedChat);
+            // setMessages([...latestChat.current, message])
           });
         })
         .catch((e) => console.log("Connection failed: ", e));
@@ -95,6 +98,7 @@ const Chat = () => {
 
     if (connection._connectionStarted) {
       try {
+        // debugger
         await postMessage(message, connection.connectionId);
       } catch (e) {
         console.log("no white space.");

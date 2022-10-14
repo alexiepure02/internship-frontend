@@ -125,9 +125,26 @@ export const updateDisplayName = async (newDisplayName) => {
   const token = getToken();
   const userId = getUserInfo().id;
 
-  await axios.put(
-    "https://localhost:7228/api/users/" + userId + "/" + newDisplayName,
+  const response = await axios.put(
+    "https://localhost:7228/api/users/" + userId + "/name/" + newDisplayName,
     {},
     { headers: { Authorization: `Bearer ${token}` } }
   );
+
+  return response.data;
+};
+
+export const updateAvatar = async (newAvatar) => {
+  const token = getToken();
+  const userId = getUserInfo().id;
+
+  const formData = new FormData()
+  formData.append("newAvatar", newAvatar)
+  const response = await axios.put(
+    "https://localhost:7228/api/users/" + userId + "/avatar",
+    formData,
+    { headers: { Authorization: `Bearer ${token}`,  'Content-Type': 'multipart/form-data' } }
+  );
+
+  return response.data;
 };

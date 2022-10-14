@@ -1,4 +1,4 @@
-import { useState, useCallback, createContext } from "react";
+import { useState, createContext } from "react";
 
 export const FriendContext = createContext();
 

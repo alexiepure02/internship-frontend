@@ -36,23 +36,31 @@ function App() {
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <FriendContextProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Header />}>
-              <Route element={<PrivateRoutes />}>
-                <Route path="friends" element={<FriendsPage />} />
-                <Route path="chat" element={<Chat />} />
-                <Route path="account" element={<AccountPage />} />
-                <Route
-                  path="friend-requests"
-                  element={<FriendRequestsPage />}
-                />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            minHeight: "100vh",
+          }}
+        >
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Header />}>
+                <Route element={<PrivateRoutes />}>
+                  <Route path="friends" element={<FriendsPage />} />
+                  <Route path="chat" element={<Chat />} />
+                  <Route path="account" element={<AccountPage />} />
+                  <Route
+                    path="friend-requests"
+                    element={<FriendRequestsPage />}
+                  />
+                </Route>
+                <Route path="login" element={<LoginPage />} />
+                <Route path="register" element={<RegisterPage />} />
               </Route>
-              <Route path="login" element={<LoginPage />} />
-              <Route path="register" element={<RegisterPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </div>
       </FriendContextProvider>
     </ThemeProvider>
   );
