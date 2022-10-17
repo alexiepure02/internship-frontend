@@ -14,8 +14,9 @@ import {
 import { useCallback } from "react";
 import { useContext } from "react";
 import { FriendContext } from "../../FriendContextProvider";
+import { getUserInfo } from "../../functions/authentication";
 
-const Chat = () => {
+const Chat = (props) => {
   const { setFriendName } = useContext(FriendContext);
 
   const [connection, setConnection] = useState(null);
@@ -25,8 +26,14 @@ const Chat = () => {
   const [offset, setOffset] = useState(0);
 
   const location = useLocation();
-  const friendId = location.state.idFriend;
-  const friendName = location.state.nameFriend;
+
+  let friendId = props.idFriend;
+  let friendName = props.nameFriend;
+
+  if (location.state !== null) {
+    friendId = location.state.idFriend;
+    friendName = location.state.nameFriend;
+  }
 
   const virtuoso = useRef(null);
 
@@ -72,12 +79,21 @@ const Chat = () => {
           // connected
           newConnection.on("ReceiveMessage", (message) => {
             // debugger
+            const userId = parseInt(getUserInfo().id);
 
-            const updatedChat = [...latestChat.current];
+            if (
+              (message.idSender === userId &&
+                message.idReceiver === friendId) ||
+              (message.idSender == friendId && message.idReceiver === userId)
+            ) {
+              const updatedChat = [...latestChat.current];
 
-            updatedChat.push(message);
+              updatedChat.push(message);
 
-            setMessages(updatedChat);
+              setMessages(updatedChat);
+            } else {
+              console.log("aaaa");
+            }
             // setMessages([...latestChat.current, message])
           });
         })

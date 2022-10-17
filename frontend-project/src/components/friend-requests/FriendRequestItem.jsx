@@ -20,6 +20,7 @@ function FriendRequestItem(props) {
           key={props.id}
           id={props.id}
           name={props.name}
+          avatarUri={props.avatarUri}
           clickable={false}
           reloadPage={props.reloadPage}
         />

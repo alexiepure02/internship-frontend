@@ -48,6 +48,7 @@ function FriendItem(props) {
   };
 
   const handleFriendClick = (event, index) => {
+    // props.setSelectedFriend({ idFriend: index, nameFriend: props.name });
     navigate("/chat", { state: { idFriend: index, nameFriend: props.name } });
   };
 
@@ -59,6 +60,7 @@ function FriendItem(props) {
             key={props.id}
             id={props.id}
             name={props.name}
+            avatarUri={props.avatarUri}
             clickable={true}
             reloadPage={props.reloadPage}
           />

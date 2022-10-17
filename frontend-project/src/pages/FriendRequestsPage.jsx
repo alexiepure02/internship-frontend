@@ -125,6 +125,7 @@ function FriendRequestsPage() {
                       key={friendRequest.id}
                       id={friendRequest.id}
                       name={friendRequest.displayName}
+                      avatarUri={friendRequest.avatarUri}
                       handleListItemClick={handleListItemClick}
                     />
                   );

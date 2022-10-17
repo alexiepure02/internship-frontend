@@ -7,26 +7,29 @@ import { useState, useEffect } from "react";
 
 import { getFriends } from "../functions/api";
 import FriendItem from "../components/friends/FriendItem";
+import Chat from "../components/chat/Chat";
 
 function FriendsPage() {
-  // const [page, reloadPage] = useState();
   const [friends, setFriends] = useState(null);
   const [searchInput, setSearchInput] = useState("");
+  const [selectedFriend, setSelectedFriend] = useState({
+    idFriend: null,
+    nameFriend: null,
+  });
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      const friends = await getFriends();
-      if (friends.length !== 0) {
-        setFriends(friends);
-      } else {
-        setFriends(null);
-      }
-    };
-
-    console.log("aa");
-
     fetchFriends();
   }, []);
+
+  const fetchFriends = async () => {
+    const friends = await getFriends();
+
+    if (friends.length !== 0) {
+      setFriends(friends);
+    } else {
+      setFriends(null);
+    }
+  };
 
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
@@ -44,12 +47,16 @@ function FriendsPage() {
   };
 
   const updateOnDeleteFriend = (id) => {
-    setFriends(friends.filter(friend => friend.id !== id));
-  }
+    setFriends(friends.filter((friend) => friend.id !== id));
+  };
 
   return (
     <>
-      <Container component="main" maxWidth="xs">
+      <Container
+        component="main"
+        maxWidth="xs"
+       // sx={{ display: "flex", minHeight: "100vh" }}
+      >
         <Box
           sx={{
             marginTop: 8,
@@ -73,7 +80,8 @@ function FriendsPage() {
                       key={friend.id}
                       id={friend.id}
                       name={friend.displayName}
-                      //reloadPage={reloadPage}
+                      avatarUri={friend.avatarUri}
+                      setSelectedFriend={setSelectedFriend}
                       updateOnDeleteFriend={updateOnDeleteFriend}
                     />
                   );
@@ -83,6 +91,20 @@ function FriendsPage() {
             )}
           </List>
         </Box>
+        {/* <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            minHeight: "100vh",
+          }}
+        >
+          {selectedFriend.idFriend && (
+            <Chat
+              idFriend={selectedFriend.idFriend}
+              nameFriend={selectedFriend.nameFriend}
+            />
+          )}
+        </div> */}
       </Container>
     </>
   );
