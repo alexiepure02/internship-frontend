@@ -26,9 +26,11 @@ const AccountPage = (props) => {
 
   const setInitialAvatar = async () => {
     if (userInfo.hasOwnProperty("avatarUri")) {
-      console.log(userInfo.avatarUri);
-      const blob = await fetch(userInfo.avatarUri).then((r) => r.blob());
-      // debugger;
+      // const blob = await fetch(userInfo.avatarUri).then((r) => r.blob());
+      const blob = await fetch(userInfo.avatarUri, {
+        cache: "reload",
+      }).then((r) => r.blob());
+      console.log(URL.createObjectURL(blob));
       setAvatarPreview(URL.createObjectURL(blob));
     }
   };
