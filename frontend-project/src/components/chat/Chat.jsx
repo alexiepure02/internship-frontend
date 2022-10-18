@@ -49,7 +49,7 @@ const Chat = () => {
     try {
       setMessages(await getMessages(friendId));
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
@@ -64,18 +64,23 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (newMessage == null || messages[messages.length - 1] == newMessage)
+    if (newMessage == null) {
       return;
-    if (
-      (newMessage.idSender === userId && newMessage.idReceiver === friendId) ||
-      (newMessage.idSender == friendId && newMessage.idReceiver === userId)
-    ) {
-      const updatedChat = [...latestChat.current];
+    }
 
-      updatedChat.push(newMessage);
+    if (messages[messages.length - 1].id != newMessage.id) {
+      if (
+        (newMessage.idSender === userId &&
+          newMessage.idReceiver === friendId) ||
+        (newMessage.idSender == friendId && newMessage.idReceiver === userId)
+      ) {
+        const updatedChat = [...latestChat.current];
 
-      setMessages(updatedChat);
-      setNewMessage(null);
+        updatedChat.push(newMessage);
+
+        setMessages(updatedChat);
+        setNewMessage(null);
+      }
     }
   }, [newMessage]);
 
@@ -108,10 +113,6 @@ const Chat = () => {
       fetchInitialMessages();
       fetchNumberOfTotalMessages();
       setOffset(10 + pageSize);
-      if (connection)
-        connection.on("ReceiveMessage", () =>
-          console.log("friend id new sub: " + friendId)
-        );
     }
   }, [friendId]);
 
@@ -135,7 +136,7 @@ const Chat = () => {
   };
 
   const startReached = useCallback(async () => {
-    console.log("reached start of chat");
+    //console.log("reached start of chat");
 
     setOffset(offset + pageSize);
 

@@ -12,7 +12,6 @@ import { UserContextProvider } from "./contexts/UserContextProvider";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 
 function App() {
   const lightTheme = createTheme({

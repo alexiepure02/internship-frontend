@@ -56,7 +56,7 @@ function MessagesList({ messages, startReached, virtuoso, startIndex }) {
   };
 
   const followOutput = useCallback((isAtBottom) => {
-    console.log("is at bottom: ", isAtBottom);
+    //console.log("is at bottom: ", isAtBottom);
     return isAtBottom ? "auto" : false;
   }, []);
 
