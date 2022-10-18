@@ -4,8 +4,8 @@ import { Container } from "@mui/system";
 
 import ChatPage from "../../pages/ChatPage";
 import FriendsPage from "../../pages/FriendsPage";
-import { FriendContext } from "../../FriendContextProvider";
-import { UserContext } from "../../UserContextProvider";
+import { FriendContext } from "../../contexts/FriendContextProvider";
+import { UserContext } from "../../contexts/UserContextProvider";
 
 import React, {
   useState,

@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { getUserInfo, login } from "../functions/authentication";
-import { UserContext } from "../UserContextProvider";
+import { UserContext } from "../contexts/UserContextProvider";
 
 function LoginPage(props) {
   const { setUserContext } = useContext(UserContext);

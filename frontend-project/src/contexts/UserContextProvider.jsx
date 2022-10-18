@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState, createContext } from "react";
-import { checkIfAuthenticated, getUserInfo } from "./functions/authentication";
+import { checkIfAuthenticated, getUserInfo } from "../functions/authentication";
 
 export const UserContext = createContext();
 

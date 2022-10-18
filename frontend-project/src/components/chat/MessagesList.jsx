@@ -2,8 +2,8 @@ import { Grid } from "@mui/material";
 import React, { useMemo, useState, useContext, useCallback } from "react";
 
 import { Virtuoso } from "react-virtuoso";
-import { FriendContext } from "../../FriendContextProvider";
-import { UserContext } from "../../UserContextProvider";
+import { FriendContext } from "../../contexts/FriendContextProvider";
+import { UserContext } from "../../contexts/UserContextProvider";
 import Message from "./Message";
 
 function MessagesList({ messages, startReached, virtuoso, startIndex }) {

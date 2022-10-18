@@ -20,8 +20,8 @@ import {
 } from "../../functions/authentication";
 
 import Sidebar from "./Sidebar";
-import { FriendContext } from "../../FriendContextProvider";
-import { UserContext } from "../../UserContextProvider";
+import { FriendContext } from "../../contexts/FriendContextProvider";
+import { UserContext } from "../../contexts/UserContextProvider";
 
 const Header = () => {
   const { userAvatar } = useContext(UserContext);

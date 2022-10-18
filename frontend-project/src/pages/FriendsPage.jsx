@@ -1,6 +1,6 @@
 import SearchBar from "../components/UI/SearchBar";
 import FriendItem from "../components/friends/FriendItem";
-import { FriendContext } from "../FriendContextProvider";
+import { FriendContext } from "../contexts/FriendContextProvider";
 
 import { Box, List, Typography } from "@mui/material";
 

@@ -5,14 +5,14 @@ import FriendsPage from "./pages/Friendspage";
 import FriendRequestsPage from "./pages/FriendRequestsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import PrivateRoutes from "./pages/PrivateRoutes";
+import PrivateRoutes from "./PrivateRoutes";
+import { FriendContextProvider } from "./contexts/FriendContextProvider";
+import { UserContextProvider } from "./contexts/UserContextProvider";
 
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import { FriendContextProvider } from "./FriendContextProvider";
-import { UserContextProvider } from "./UserContextProvider";
 
 function App() {
   const lightTheme = createTheme({

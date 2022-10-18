@@ -11,7 +11,7 @@ import {
 import { useEffect, useState, useContext } from "react";
 
 import Footer from "../components/UI/Footer";
-import { UserContext } from "../UserContextProvider";
+import { UserContext } from "../contexts/UserContextProvider";
 
 import { updateDisplayName, updateAvatar } from "../functions/api";
 

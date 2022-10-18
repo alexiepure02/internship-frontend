@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import { checkIfAuthenticated } from "../functions/authentication";
+import { checkIfAuthenticated } from "./functions/authentication";
 
 const PrivateRoutes = () => {
   const isAuthenticated = checkIfAuthenticated();

@@ -4,8 +4,8 @@ import { useState } from "react";
 
 import MessagesList from "../components/chat/MessagesList";
 import { useContext } from "react";
-import { FriendContext } from "../FriendContextProvider";
-import { UserContext } from "../UserContextProvider";
+import { FriendContext } from "../contexts/FriendContextProvider";
+import { UserContext } from "../contexts/UserContextProvider";
 
 globalThis.VIRTUOSO_LOG_LEVEL = 0;
 
