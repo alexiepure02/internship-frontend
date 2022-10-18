@@ -11,7 +11,7 @@ import { UserContextProvider } from "./contexts/UserContextProvider";
 
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   const lightTheme = createTheme({
@@ -57,6 +57,11 @@ function App() {
                   <Route path="login" element={<LoginPage />} />
                   <Route path="register" element={<RegisterPage />} />
                 </Route>
+                <Route
+                  path="*"
+                  exact={true}
+                  element={<Navigate to="/friends" />}
+                />
               </Routes>
             </BrowserRouter>
           </div>
