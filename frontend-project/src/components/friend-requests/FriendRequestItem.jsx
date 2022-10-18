@@ -1,15 +1,7 @@
-import {
-  Avatar,
-  Divider,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-  Typography,
-} from "@mui/material";
-
-import CancelIcon from "@mui/icons-material/Cancel";
+import { Divider, ListItem, ListItemButton } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import CancelIcon from "@mui/icons-material/Cancel";
+
 import Friend from "../friends/Friend";
 
 function FriendRequestItem(props) {

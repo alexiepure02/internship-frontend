@@ -3,7 +3,7 @@ import { Box, Container, Typography } from "@mui/material";
 const Footer = () => {
   return (
     <Container
-      maxWidth="lg"
+      maxWidth="1"
       sx={{
         position: "absolute",
         bottom: 0,

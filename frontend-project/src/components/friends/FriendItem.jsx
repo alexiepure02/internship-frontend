@@ -9,11 +9,11 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { deleteFriend } from "../../functions/api";
 import ConfirmDialog from "./ConfirmDialog";
 import Friend from "./Friend";
-import { useNavigate } from "react-router-dom";
 
 function FriendItem(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -48,8 +48,8 @@ function FriendItem(props) {
   };
 
   const handleFriendClick = (event, index) => {
-    // props.setSelectedFriend({ idFriend: index, nameFriend: props.name });
-    navigate("/chat", { state: { idFriend: index, nameFriend: props.name } });
+    props.setSelectedFriend(index, props.name);
+    navigate("/chat");
   };
 
   return (
@@ -62,7 +62,6 @@ function FriendItem(props) {
             name={props.name}
             avatarUri={props.avatarUri}
             clickable={true}
-            reloadPage={props.reloadPage}
           />
         </ListItemButton>
         <IconButton

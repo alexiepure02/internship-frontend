@@ -1,16 +1,4 @@
-import FriendRequest from "../components/friend-requests/FriendRequestItem";
-
-import {
-  Box,
-  List,
-  ListItemButton,
-  ListItem,
-  Alert,
-  Container,
-  TextField,
-  Button,
-  Divider,
-} from "@mui/material";
+import { Box, List, Alert, Container, TextField, Button } from "@mui/material";
 
 import { useState, useEffect } from "react";
 
@@ -19,13 +7,13 @@ import {
   getFriendRequests,
   updateFriendRequest,
 } from "../functions/api";
+
 import SearchBar from "../components/UI/SearchBar";
 import FriendRequestItem from "../components/friend-requests/FriendRequestItem";
 
 function FriendRequestsPage() {
-  const [page, reloadPage] = useState();
   const [friendRequests, setFriendRequests] = useState(null);
-  const [friendId, setFriendId] = useState("");
+  const [requestedId, setRequestedId] = useState("");
   const [message, setMessage] = useState(null);
   const [searchInput, setSearchInput] = useState("");
 
@@ -40,22 +28,25 @@ function FriendRequestsPage() {
     };
 
     fetchFriendRequests();
-  }, [page]);
+  }, []);
 
   const sendFriendRequest = async (event) => {
     try {
-      await addFriendRequest(friendId);
+      await addFriendRequest(requestedId);
       setMessage(<Alert>Friend request sent succesfully.</Alert>);
     } catch (err) {
       setMessage(<Alert severity="error">Invalid id.</Alert>);
     }
 
-    setFriendId("");
+    setRequestedId("");
   };
 
   const handleListItemClick = async (event, requesterId, accepted) => {
     await updateFriendRequest(requesterId, accepted);
-    reloadPage({});
+
+    setFriendRequests(
+      friendRequests.filter((friendRequest) => friendRequest.id !== requesterId)
+    );
   };
 
   const handleSearchChange = (event) => {
@@ -95,8 +86,8 @@ function FriendRequestsPage() {
           id="friend-request"
           label="Send a request"
           name="friend-request"
-          value={friendId}
-          onChange={(event) => setFriendId(event.currentTarget.value)}
+          value={requestedId}
+          onChange={(event) => setRequestedId(event.currentTarget.value)}
         />
         <Button
           type="submit"

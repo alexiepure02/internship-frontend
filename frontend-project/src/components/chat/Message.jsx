@@ -2,7 +2,7 @@ import { Typography, Card, Tooltip } from "@mui/material";
 
 function Message(props) {
   return (
-    <Tooltip title={props.time} placement={"left-" + props.position}>
+    <Tooltip title={props.time} placement={props.tooltip}>
       <Card
         align={props.position}
         elevation={2}

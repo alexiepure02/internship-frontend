@@ -6,13 +6,17 @@ import {
   Box,
   Alert,
 } from "@mui/material";
+import { useContext } from "react";
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { login } from "../functions/authentication";
+import { getUserInfo, login } from "../functions/authentication";
+import { UserContext } from "../UserContextProvider";
 
 function LoginPage(props) {
+  const { setUserContext } = useContext(UserContext);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -27,6 +31,8 @@ function LoginPage(props) {
 
     try {
       await login(username, password);
+      const userInfo = getUserInfo();
+      setUserContext(userInfo);
       navigate("/friends");
     } catch (err) {
       setError(err);

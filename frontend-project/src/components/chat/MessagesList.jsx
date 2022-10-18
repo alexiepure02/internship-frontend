@@ -1,16 +1,15 @@
-import { Grid, List } from "@mui/material";
-import React, { forwardRef, useCallback, useMemo, useState } from "react";
+import { Grid } from "@mui/material";
+import React, { useMemo, useState, useContext, useCallback } from "react";
+
 import { Virtuoso } from "react-virtuoso";
+import { FriendContext } from "../../FriendContextProvider";
+import { UserContext } from "../../UserContextProvider";
 import Message from "./Message";
 
-function MessagesList({
-  messages,
-  startReached,
-  virtuoso,
-  startIndex,
-  userId,
-  friendId,
-}) {
+function MessagesList({ messages, startReached, virtuoso, startIndex }) {
+  const { friendId } = useContext(FriendContext);
+  const { userId } = useContext(UserContext);
+
   const [firstItemIndex, setFirstItemIndex] = useState(
     startIndex - messages.length
   );
@@ -25,14 +24,14 @@ function MessagesList({
     return messages;
   }, [messages]);
 
-  const itemContent = useCallback((index, message) => {
-    //<Grid item container key={index} justifyContent="flex-end">
-
+  const itemContent = (index, message) => {
     let position = "start";
+    let tooltip = "right";
     let color = "main";
 
     if (message.idSender == userId && message.idReceiver == friendId) {
       position = "end";
+      tooltip = "left";
       color = "dark";
     }
 
@@ -45,6 +44,7 @@ function MessagesList({
       >
         <Message
           position={position}
+          tooltip={tooltip}
           backgroundColor={"secondary." + color}
           idSender={message.idSender}
           idReceiver={message.idReceiver}
@@ -53,7 +53,7 @@ function MessagesList({
         />
       </Grid>
     );
-  }, []);
+  };
 
   const followOutput = useCallback((isAtBottom) => {
     console.log("is at bottom: ", isAtBottom);
@@ -61,13 +61,6 @@ function MessagesList({
   }, []);
 
   return (
-    // <Grid
-    //   item
-    //   container
-    //   direction="column"
-    //   spacing={1}
-    //   sx={{ pt: 2, pb: 8, pl: 1, pr: 1, minHeight: "95%", width: "100vh" }}
-    // >
     <div
       style={{
         alignSelf: "stretch",
@@ -87,7 +80,6 @@ function MessagesList({
         style={{ flex: "1 1 auto", overscrollBehavior: "contain" }}
       />
     </div>
-    //</Grid>
   );
 }
 

@@ -1,5 +1,3 @@
-import Sidebar from "./Sidebar";
-
 import {
   AppBar,
   Typography,
@@ -11,10 +9,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useContext } from "react";
 
 import {
   logout,
@@ -22,9 +18,13 @@ import {
   checkIfAuthenticated,
   getUserInfo,
 } from "../../functions/authentication";
+
+import Sidebar from "./Sidebar";
 import { FriendContext } from "../../FriendContextProvider";
+import { UserContext } from "../../UserContextProvider";
 
 const Header = () => {
+  const { userAvatar } = useContext(UserContext);
   const { friendName } = useContext(FriendContext);
 
   const [sidebar, setSidebar] = useState(false);
@@ -33,24 +33,13 @@ const Header = () => {
 
   const isAuthenticated = checkIfAuthenticated();
   const displayName = isAuthenticated ? getUserInfo().name : "";
-  const [avatarPreview, setAvatarPreview] = useState();
   useEffect(() => {
     if (isAuthenticated) {
       if (checkIfTokenExpired()) {
         logout();
-      } else {
-        const userInfo = getUserInfo();
-        setInitialAvatar(userInfo);
       }
     }
   }, [isAuthenticated]);
-
-  const setInitialAvatar = async (userInfo) => {
-    if (userInfo.hasOwnProperty("avatarUri")) {
-      const blob = await fetch(userInfo.avatarUri).then((r) => r.blob());
-      setAvatarPreview(URL.createObjectURL(blob));
-    }
-  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -95,7 +84,7 @@ const Header = () => {
               sx={{ p: 0 }}
             >
               <Avatar
-                src={avatarPreview}
+                src={userAvatar && userAvatar}
                 sx={{
                   color: "primary.main",
                   backgroundColor: "secondary.main",

@@ -4,59 +4,56 @@ import {
   Container,
   Box,
   Button,
-  Tooltip,
   TextField,
   Alert,
 } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
 import Footer from "../components/UI/Footer";
+import { UserContext } from "../UserContextProvider";
 
 import { updateDisplayName, updateAvatar } from "../functions/api";
-import { getUserInfo } from "../functions/authentication";
 
 const AccountPage = (props) => {
+  const { userId, userName, userAvatar, setUserAvatar } =
+    useContext(UserContext);
+
   const [editable, setEditable] = useState(false);
-  const [updated, setUpdated] = useState(false);
-  const userInfo = getUserInfo();
-  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [updatedName, setUpdatedName] = useState(false);
   const [newAvatarUri, setNewAvatarUri] = useState(null);
   const [newAvatarPreview, setNewAvatarPreview] = useState(null);
-  const [newName, setNewName] = useState(userInfo.name);
-
-  const setInitialAvatar = async () => {
-    if (userInfo.hasOwnProperty("avatarUri")) {
-      // const blob = await fetch(userInfo.avatarUri).then((r) => r.blob());
-      const blob = await fetch(userInfo.avatarUri, {
-        cache: "reload",
-      }).then((r) => r.blob());
-      console.log(URL.createObjectURL(blob));
-      setAvatarPreview(URL.createObjectURL(blob));
-    }
-  };
+  const [newName, setNewName] = useState();
 
   useEffect(() => {
-    setInitialAvatar();
-  }, []);
+    setNewName(userName);
+  }, [userName]);
 
-  const handleEditableClick = async (value) => {
+  const handleEditClick = (value) => {
+    setEditable(value);
+  };
+
+  const handleDoneClick = async (value) => {
     // when the user clicks done
     if (!value) {
-      if (newName !== userInfo.name) {
+      if (newName !== userName) {
         const response = await updateDisplayName(newName);
-
-        console.log(response);
-
-        setUpdated(true);
+        setUpdatedName(true);
       }
 
-      if (newAvatarUri != null) {
+      if (newAvatarPreview != null) {
         await updateAvatar(newAvatarUri);
-        setAvatarPreview(URL.createObjectURL(newAvatarUri));
-        setUpdated(true);
+        setUserAvatar(URL.createObjectURL(newAvatarUri));
+        setNewAvatarPreview(null);
       }
     }
 
+    setEditable(value);
+  };
+
+  const handleCancelClick = (value) => {
+    setNewAvatarUri(null);
+    setNewAvatarPreview(null);
     setEditable(value);
   };
 
@@ -74,7 +71,7 @@ const AccountPage = (props) => {
     <>
       <Box display="flex" alignItems="center">
         <Avatar
-          src={newAvatarPreview ? newAvatarPreview : avatarPreview}
+          src={newAvatarPreview ? newAvatarPreview : userAvatar}
           sx={{
             cursor: "pointer",
             width: 100,
@@ -84,7 +81,7 @@ const AccountPage = (props) => {
             backgroundColor: "secondary.main",
           }}
         >
-          {userInfo.name.charAt(0).toUpperCase()}
+          {userName && userName.charAt(0).toUpperCase()}
         </Avatar>
         <Button variant="contained" component="label" sx={{ ml: 4 }}>
           Change avatar
@@ -107,10 +104,18 @@ const AccountPage = (props) => {
       />
       <Button
         variant="contained"
-        onClick={(event) => handleEditableClick(false)}
+        onClick={(event) => handleDoneClick(false)}
         sx={{ mt: 5 }}
       >
         Done
+      </Button>
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={(event) => handleCancelClick(false)}
+        sx={{ mt: 3 }}
+      >
+        Cancel
       </Button>
     </>
   );
@@ -118,7 +123,7 @@ const AccountPage = (props) => {
   const readMenu = (
     <>
       <Avatar
-        src={newAvatarPreview ? newAvatarPreview : avatarPreview}
+        src={userAvatar}
         sx={{
           width: 100,
           height: 100,
@@ -127,15 +132,15 @@ const AccountPage = (props) => {
           backgroundColor: "secondary.main",
         }}
       >
-        {userInfo.name.charAt(0).toUpperCase()}
+        {userName && userName.charAt(0).toUpperCase()}
       </Avatar>
       <Typography variant="h4" sx={{ mt: 4 }}>
-        Name: {userInfo.name}
+        Name: {userName}
       </Typography>
-      <Typography variant="h4">Id: {userInfo.id}</Typography>
+      <Typography variant="h4">Id: {userId}</Typography>
       <Button
         variant="contained"
-        onClick={(event) => handleEditableClick(true)}
+        onClick={(event) => handleEditClick(true)}
         sx={{ mt: 4 }}
       >
         Edit
@@ -154,15 +159,15 @@ const AccountPage = (props) => {
             alignItems: "center",
           }}
         >
-          {userInfo && editable ? editMenu : readMenu}
-          {updated && (
+          {editable ? editMenu : readMenu}
+          {updatedName && (
             <Alert severity="warning" sx={{ mt: 3 }}>
               Re-log to display changes
             </Alert>
           )}
         </Box>
       </Container>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };

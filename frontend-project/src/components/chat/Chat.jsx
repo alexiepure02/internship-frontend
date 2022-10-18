@@ -1,9 +1,20 @@
 import * as signalR from "@microsoft/signalr";
 
-import ChatPage from "../../pages/ChatPage";
+import { Container } from "@mui/system";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import ChatPage from "../../pages/ChatPage";
+import FriendsPage from "../../pages/FriendsPage";
+import { FriendContext } from "../../FriendContextProvider";
+import { UserContext } from "../../UserContextProvider";
+
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   getMessages,
@@ -11,29 +22,22 @@ import {
   getSomeMessages,
   postMessage,
 } from "../../functions/api";
-import { useCallback } from "react";
-import { useContext } from "react";
-import { FriendContext } from "../../FriendContextProvider";
-import { getUserInfo } from "../../functions/authentication";
+import useWindowDimensions from "../../hooks/useWindowsDimensions";
 
-const Chat = (props) => {
-  const { setFriendName } = useContext(FriendContext);
+const Chat = () => {
+  const { friendId } = useContext(FriendContext);
+  const { userId } = useContext(UserContext);
 
   const [connection, setConnection] = useState(null);
   const [numberOfTotalMessages, setNumberOfTotalMessages] = useState(null);
   const [messages, setMessages] = useState([]);
   const latestChat = useRef(null);
   const [offset, setOffset] = useState(0);
+  const [newMessage, setNewMessage] = useState(null);
 
-  const location = useLocation();
+  const { width } = useWindowDimensions();
 
-  let friendId = props.idFriend;
-  let friendName = props.nameFriend;
-
-  if (location.state !== null) {
-    friendId = location.state.idFriend;
-    friendName = location.state.nameFriend;
-  }
+  const navigate = useNavigate();
 
   const virtuoso = useRef(null);
 
@@ -55,18 +59,27 @@ const Chat = (props) => {
   };
 
   const fetchInitialMessages = async () => {
-    const initialMessages = await getSomeMessages(friendId, offset, pageSize);
+    const initialMessages = await getSomeMessages(friendId, 0, pageSize);
     setMessages(initialMessages);
   };
 
   useEffect(() => {
-    setFriendName(friendName);
+    if (newMessage == null || messages[messages.length - 1] == newMessage)
+      return;
+    if (
+      (newMessage.idSender === userId && newMessage.idReceiver === friendId) ||
+      (newMessage.idSender == friendId && newMessage.idReceiver === userId)
+    ) {
+      const updatedChat = [...latestChat.current];
 
-    fetchInitialMessages();
-    fetchNumberOfTotalMessages();
+      updatedChat.push(newMessage);
 
-    setOffset(offset + pageSize);
+      setMessages(updatedChat);
+      setNewMessage(null);
+    }
+  }, [newMessage]);
 
+  const createSignalRConnection = () => {
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7228/hub/chat")
       .withAutomaticReconnect()
@@ -77,47 +90,43 @@ const Chat = (props) => {
         .start()
         .then((result) => {
           // connected
-          newConnection.on("ReceiveMessage", (message) => {
-            // debugger
-            const userId = parseInt(getUserInfo().id);
-
-            if (
-              (message.idSender === userId &&
-                message.idReceiver === friendId) ||
-              (message.idSender == friendId && message.idReceiver === userId)
-            ) {
-              const updatedChat = [...latestChat.current];
-
-              updatedChat.push(message);
-
-              setMessages(updatedChat);
-            } else {
-              console.log("aaaa");
-            }
-            // setMessages([...latestChat.current, message])
-          });
+          newConnection.on("ReceiveMessage", setNewMessage);
         })
         .catch((e) => console.log("Connection failed: ", e));
 
       setConnection(newConnection);
     }
+  };
 
-    return () => setFriendName(null);
+  useEffect(() => {
+    createSignalRConnection();
   }, []);
 
-  const sendMessage = async (ifSender, idReceiver, text) => {
+  useEffect(() => {
+    if (friendId === null) navigate("/friends");
+    else {
+      fetchInitialMessages();
+      fetchNumberOfTotalMessages();
+      setOffset(10 + pageSize);
+      if (connection)
+        connection.on("ReceiveMessage", () =>
+          console.log("friend id new sub: " + friendId)
+        );
+    }
+  }, [friendId]);
+
+  const sendMessage = async (idSender, idReceiver, text) => {
     const message = {
-      idSender: ifSender,
+      idSender: idSender,
       idReceiver: idReceiver,
       text: text,
     };
 
     if (connection._connectionStarted) {
       try {
-        // debugger
         await postMessage(message, connection.connectionId);
       } catch (e) {
-        console.log("no white space.");
+        //console.log("no white space.");
         //console.log(e);
       }
     } else {
@@ -137,14 +146,20 @@ const Chat = (props) => {
   }, [messages]);
 
   return (
-    <ChatPage
-      sendMessage={sendMessage}
-      messages={messages}
-      friendId={friendId}
-      virtuoso={virtuoso}
-      startReached={startReached}
-      numberOfTotalMessages={numberOfTotalMessages}
-    />
+    <Container
+      component="main"
+      disableGutters
+      sx={{ display: "flex", flexGrow: 1 }}
+    >
+      {width > 950 && <FriendsPage />}
+      <ChatPage
+        sendMessage={sendMessage}
+        messages={messages}
+        virtuoso={virtuoso}
+        startReached={startReached}
+        numberOfTotalMessages={numberOfTotalMessages}
+      />
+    </Container>
   );
 };
 
