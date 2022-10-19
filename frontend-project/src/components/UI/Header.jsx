@@ -73,7 +73,7 @@ const Header = () => {
           </IconButton>
 
           <Typography variant="h5" sx={{ flexGrow: 1 }}>
-            {friendName}
+            {window.location.pathname == "/chat" && friendName}
           </Typography>
 
           {isAuthenticated ? (

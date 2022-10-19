@@ -25,7 +25,7 @@ import {
 import useWindowDimensions from "../../hooks/useWindowsDimensions";
 
 const Chat = () => {
-  const { friendId, setFriendId, setFriendName } = useContext(FriendContext);
+  const { friendId } = useContext(FriendContext);
   const { userId } = useContext(UserContext);
 
   const [connection, setConnection] = useState(null);
@@ -63,12 +63,14 @@ const Chat = () => {
     setMessages(initialMessages);
   };
 
+  const addNewMessage = (message) => {
+    setNewMessage(message);
+  };
+
   useEffect(() => {
     if (newMessage == null) {
       return;
     }
-
-    console.log(messages[messages.length - 1], newMessage);
 
     if (messages[messages.length - 1].id != newMessage.id) {
       if (
@@ -97,6 +99,7 @@ const Chat = () => {
         .start()
         .then((result) => {
           // connected
+          //console.log("message received.");
           newConnection.on("ReceiveMessage", setNewMessage);
         })
         .catch((e) => console.log("Connection failed: ", e));
@@ -107,11 +110,6 @@ const Chat = () => {
 
   useEffect(() => {
     createSignalRConnection();
-
-    return () => {
-      setFriendId(null);
-      setFriendName(null);
-    };
   }, []);
 
   useEffect(() => {
